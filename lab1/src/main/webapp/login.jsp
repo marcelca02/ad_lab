@@ -15,11 +15,11 @@
         <div>
             <h1>Login Page</h1>
             <div>
-                <form>
-                    User: <input name="user"></input>
+                <form action="login" method="post">
+                    User: <input name="user" placeholder="user"></input>
                     <br>
                     <br>
-                    Password: <input name="password" type="password"></input>
+                    Password: <input name="password" placeholder="password" type="password"></input>
                 </form>                  
             </div>
         </div>
