@@ -53,14 +53,13 @@ public class login extends HttpServlet {
 
             
             // Create query and statement
-            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+            String query = "SELECT * FROM USUARIOS WHERE ID_USUARIO = ? AND PASSWORD = ?";
             PreparedStatement statement = c.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, password);
             
             ResultSet res = statement.executeQuery();
             
-            out.println("Fuera del bucle");
             
             if (res.next()) {
                 HttpSession session = request.getSession();
@@ -68,10 +67,11 @@ public class login extends HttpServlet {
                 c.close();
                 Cookie uNameCookie = new Cookie("username",username);
                 response.addCookie(uNameCookie);
-                response.sendRedirect("/index.html");
+                response.sendRedirect("/lab1/index.html");
             }
             else {
                 out.println("Usuario o contraseña incorrectos");
+                out.println("User: "+username+" Password: "+password);
                 // response.sendRedirect("/error.jsp");
             }
 
