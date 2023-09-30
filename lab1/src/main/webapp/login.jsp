@@ -16,7 +16,7 @@
             <h1>Login Page</h1>
             <div>
                 <form action="login" method="post">
-                    User: <input name="user" placeholder="user"></input>
+                    User: <input name="username" placeholder="user"></input>
                     <br>
                     <br>
                     Password: <input name="password" placeholder="password" type="password"></input>
