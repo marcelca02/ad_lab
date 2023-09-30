@@ -70,9 +70,7 @@ public class login extends HttpServlet {
                 response.sendRedirect("/lab1/index.html");
             }
             else {
-                out.println("Usuario o contraseña incorrectos");
-                out.println("User: "+username+" Password: "+password);
-                // response.sendRedirect("/error.jsp");
+                response.sendRedirect("/lab1/error.jsp");
             }
 
             
