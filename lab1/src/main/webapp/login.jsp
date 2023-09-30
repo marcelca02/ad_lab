@@ -20,6 +20,7 @@
                     <br>
                     <br>
                     Password: <input name="password" placeholder="password" type="password"></input>
+                    <button type="submit"></button>
                 </form>                  
             </div>
         </div>
