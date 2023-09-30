@@ -15,7 +15,7 @@
         <h1>¡Ha ocurrido un error!</h1>
       <%
       String referer = request.getHeader("Referer");
-      if (referer != null1 && !referer.isEmpty()){
+      if (referer != null && !referer.isEmpty()){
       %>
         <a href="<% out.write(referer); %>">Volver atrás</a>
       <%
