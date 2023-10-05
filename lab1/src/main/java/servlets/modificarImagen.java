@@ -4,6 +4,7 @@
  */
 package servlets;
 
+import classes.Image;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,9 +32,8 @@ public class modificarImagen extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        int id;
-        
-        String name;
+        HttpSession session = request.getSession();
+        Image img = (Image) session.getAttribute("image");
         
         Connection c = null;
         response.setContentType("text/html;charset=UTF-8");
@@ -44,7 +47,7 @@ public class modificarImagen extends HttpServlet {
             // Create query and statement
             String query = "SELECT * FROM IMAGES WHERE ID = ?";
             PreparedStatement statement = c.prepareStatement(query);
-            statement.setString(1, id);
+            statement.setString(1, img.id.toString());
             
             ResultSet res = statement.executeQuery();
             
@@ -63,7 +66,8 @@ public class modificarImagen extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        HttpSesion session = request.getSession();
+        HttpSession session = request.getSession();
+        Image img = (Image) session.getAttribute("image");
         
         
         String title = request.getParameter("title");
@@ -88,13 +92,15 @@ public class modificarImagen extends HttpServlet {
             statement.setString(2, description);
             statement.setString(3, keywords);
             statement.setString(4,filename);
-            statement.setString(5, id);
+            statement.setString(5, img.getId().toString());
             
             statement.executeUpdate();
             
             
-            
-
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(modificarImagen.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(modificarImagen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
