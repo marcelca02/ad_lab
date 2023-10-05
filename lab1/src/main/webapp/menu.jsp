@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Menu</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -67,9 +67,9 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a href="#">Registrar Imagen</a></li>
+                    <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
                     <li><a href="#">Listar Imagenes</a></li>
-                    <li><a href="#">Burcar Imagen</a></li>
+                    <li><a href="#">Buscar Imagen</a></li>
                     <li><a href="#">Cerrar Sesion</a></li>
                 </ul>
             </div>

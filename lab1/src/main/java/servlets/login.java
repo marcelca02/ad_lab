@@ -67,7 +67,7 @@ public class login extends HttpServlet {
                 c.close();
                 Cookie uNameCookie = new Cookie("username",username);
                 response.addCookie(uNameCookie);
-                response.sendRedirect("/lab1/index.html");
+                response.sendRedirect("/lab1/menu.jsp");
             }
             else {
                 response.sendRedirect("/lab1/error.jsp");
