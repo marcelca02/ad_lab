@@ -33,7 +33,9 @@ public class modificarImagen extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        Image img = (Image) session.getAttribute("image");
+        
+        
+        int id = 1;
         
         Connection c = null;
         response.setContentType("text/html;charset=UTF-8");
@@ -45,19 +47,36 @@ public class modificarImagen extends HttpServlet {
             c = (Connection) DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
             
             // Create query and statement
-            String query = "SELECT * FROM IMAGES WHERE ID = ?";
+            String query = "SELECT TITLE, DESCRIPTION, KEYWORDS, FILENAME FROM IMAGE WHERE ID = ?";
             PreparedStatement statement = c.prepareStatement(query);
-            statement.setString(1, img.id.toString());
+            statement.setString(1, Integer.toString(id));
             
             ResultSet res = statement.executeQuery();
             
             if (res.next()) {
+                // Get field values from element
+                String title = res.getString("TITLE");
+                String description = res.getString("DESCRIPTION");
+                String keywords = res.getString("KEYWORDS");
+                String filename = res.getString("FILENAME");
                 
+                // Set form parameters
+                request.setAttribute("title", title);
+                request.setAttribute("description", description);
+                request.setAttribute("keywords",keywords);
+                request.setAttribute("filename",filename);
+                
+                c.close();
+                response.sendRedirect("/lab1/modificarImagen.jsp");
             }
             else {
                 response.sendRedirect("/lab1/error.jsp");
             }
 
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(modificarImagen.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(modificarImagen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -68,6 +87,8 @@ public class modificarImagen extends HttpServlet {
         
         HttpSession session = request.getSession();
         Image img = (Image) session.getAttribute("image");
+        
+        int id = img.getId();
         
         
         String title = request.getParameter("title");
@@ -85,14 +106,14 @@ public class modificarImagen extends HttpServlet {
             c = (Connection) DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
             
             // Create query and statement
-            String query = "UPDATE IMAGES SET TITLE = ?, DESCRIPTION = ?, KEYWORDS = ?, FILENAME = ? WHERE ID = ?";
+            String query = "UPDATE IMAGE SET TITLE = ?, DESCRIPTION = ?, KEYWORDS = ?, FILENAME = ? WHERE ID = ?";
             PreparedStatement statement = c.prepareStatement(query);
             
             statement.setString(1, title);
             statement.setString(2, description);
             statement.setString(3, keywords);
             statement.setString(4,filename);
-            statement.setString(5, img.getId().toString());
+            statement.setString(5, Integer.toString(id));
             
             statement.executeUpdate();
             
