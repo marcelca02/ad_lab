@@ -42,9 +42,8 @@ public class modificarImagen extends HttpServlet {
         String description = request.getParameter("description");
         String filename = request.getParameter("filename");
         
-        dbConnection db = new dbConnection();
-        
         try {
+            dbConnection db = new dbConnection();
             if (!db.isOwner(id, img.getCreator())) {
                 //send redirect
             } 

@@ -4,6 +4,8 @@
  */
 package utils;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,21 +18,19 @@ import java.sql.SQLException;
  */
 public class dbConnection {
     
+    private Connection c;
+    
     final private String dbStringConnection = "jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2";
+    final private String dbStringDriver = "org.apache.derby.jdbc.ClientDriver";
     
-    public dbConnection() {}
-    
-    private void connectDb(Connection c) throws ClassNotFoundException, SQLException {
-        Class.forName("org.apache.derby.jdbc.ClientDriver");
+    public dbConnection() throws ClassNotFoundException, SQLException {
+        Class.forName(this.dbStringDriver);
         // Create db connection
         c = (Connection) DriverManager.getConnection(this.dbStringConnection);
     }
     
-    public void modifyImage(int id, String title, String description, String keywords, String filename) throws ClassNotFoundException, SQLException {
-        
-        Connection c = null;
-        connectDb(c);
-        
+    public void modifyImage(int id, String title, String description, String keywords, String filename) throws ClassNotFoundException, SQLException {       
+
         // Create query and statement
         String query = "UPDATE IMAGE SET TITLE = ?, DESCRIPTION = ?, KEYWORDS = ?, FILENAME = ? WHERE ID = ?";
         PreparedStatement statement = c.prepareStatement(query);
@@ -45,9 +45,7 @@ public class dbConnection {
     }
     
     public boolean isOwner(int id, String creator) throws ClassNotFoundException, SQLException {
-        Connection c = null;
-        connectDb(c);
-        
+
         String query = "SELECT * FROM USUARIOS WHERE ID = ? AND CREATOR = ?";
         PreparedStatement statement = c.prepareStatement(query);
         
@@ -56,6 +54,24 @@ public class dbConnection {
         
         ResultSet res = statement.executeQuery();
         return res.next();
+    }
+    
+    public String isLoginCorrect(String username, String password) throws SQLException, ClassNotFoundException {
+        
+        // Create query and statement
+        String query = "SELECT * FROM USUARIOS WHERE ID_USUARIO = ? AND PASSWORD = ?";
+        PreparedStatement statement = c.prepareStatement(query);
+        statement.setString(1, username);
+        statement.setString(2, password);
+
+        ResultSet res = statement.executeQuery();
+
+        if (res.next()) return username;
+        else return null;
+    }
+    
+    public void closeDb() {
+        c.close();
     }
     
 }

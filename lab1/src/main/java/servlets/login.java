@@ -4,11 +4,10 @@
  */
 package servlets;
 
-import java.sql.Connection;
+import utils.dbConnection;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -16,7 +15,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,46 +40,25 @@ public class login extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         
-        Connection c = null;
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
           
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-            
-            // Create db connection
-            c = (Connection) DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
-
-            
-            // Create query and statement
-            String query = "SELECT * FROM USUARIOS WHERE ID_USUARIO = ? AND PASSWORD = ?";
-            PreparedStatement statement = c.prepareStatement(query);
-            statement.setString(1, username);
-            statement.setString(2, password);
-            
-            ResultSet res = statement.executeQuery();
-            
-            
-            if (res.next()) {
+            dbConnection db = new dbConnection();
+            if (db.isLoginCorrect(username, password) != null) {
+                db.closeDb();
+                // Set session
                 HttpSession session = request.getSession();
                 session.setAttribute("username",username);
-                c.close();
                 Cookie uNameCookie = new Cookie("username",username);
                 response.addCookie(uNameCookie);
+                // Redirect
                 response.sendRedirect("/lab1/index.html");
             }
-            else {
-                response.sendRedirect("/lab1/error.jsp");
-            }
-
+            else response.sendRedirect("/lab1/error.jsp");
             
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
     }
 
     /**
