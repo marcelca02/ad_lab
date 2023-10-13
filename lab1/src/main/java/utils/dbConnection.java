@@ -4,18 +4,13 @@
  */
 package utils;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- * @author marcel
- */
+
 public class dbConnection {
     
     private Connection c;
@@ -27,6 +22,10 @@ public class dbConnection {
         Class.forName(this.dbStringDriver);
         // Create db connection
         c = (Connection) DriverManager.getConnection(this.dbStringConnection);
+    }
+    
+    public void closeDb() throws SQLException {
+        c.close();
     }
     
     public void modifyImage(int id, String title, String description, String keywords, String filename) throws ClassNotFoundException, SQLException {       
@@ -70,8 +69,6 @@ public class dbConnection {
         else return null;
     }
     
-    public void closeDb() {
-        c.close();
-    }
+    
     
 }
