@@ -14,17 +14,17 @@
     <body>
         <h1>Modificar Imagen</h1>
         <div>
-            <form action="mod" method="post">
-                Título: <input name="title"></input>
+            <form action="modificarImagen" method="post">
+                Título: <input name="title" value="${title}" ></input>
                 <br>
                 <br>
-                Descripción: <input name="description" placeholder="Descripción"></input>
+                Descripción: <input name="description" placeholder="Descripción" value="${description}""></input>
                 <br>
                 <br>
-                Palabras clave: <input name="key"></input>
+                Palabras clave: <input name="key" value="${keywords}"></input>
                 <br>
                 <br>
-                Nombre del fichero: <input name="filename"></input>
+                Nombre del fichero: <input name="filename" value="${filename}"></input>
                 <button type="submit"></button>
             </form>                  
         </div>
