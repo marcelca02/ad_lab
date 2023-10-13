@@ -52,7 +52,7 @@ public class login extends HttpServlet {
                 Cookie uNameCookie = new Cookie("username",username);
                 response.addCookie(uNameCookie);
                 // Redirect
-                response.sendRedirect("/lab1/index.html");
+                response.sendRedirect("/lab1/menu.jsp");
             }
             else response.sendRedirect("/lab1/error.jsp");
             
