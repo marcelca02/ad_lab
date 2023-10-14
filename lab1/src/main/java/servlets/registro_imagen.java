@@ -9,27 +9,30 @@ import java.sql.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  *
  * @author Max Pasten
  */
+@MultipartConfig
 @WebServlet(name = "registro_imagen", urlPatterns = {"/registro_imagen"})
 public class registro_imagen extends HttpServlet {
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,8 +42,19 @@ public class registro_imagen extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
+    private static final long serialVersionUID = 1L;
+       
+    public registro_imagen() {
+        super();
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
+        
+        
+        //**********************
+        
         
         // Get registro_imagen form parameters
         String title = request.getParameter("title");
@@ -50,7 +64,7 @@ public class registro_imagen extends HttpServlet {
         String creator = request.getParameter("creator");
         String capture_date = request.getParameter("capture_date");
         String storage_date = request.getParameter("storage_date");
-        String filename = request.getParameter("filename");
+        //String filename = request.getParameter("filename");
         
         Date todayDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -62,6 +76,34 @@ public class registro_imagen extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             
+            out.println("In do post method of Add Image servlet.");
+            Part file=request.getPart("filename");
+            
+            // Nombre de Archivo
+            String imageFileName=file.getSubmittedFileName();  // get selected image file name
+            out.println("Selected Image File Name : "+imageFileName);
+            
+            String uploadPath="C:/Users/Max Pasten/Downloads/"+imageFileName;  // upload path where we have to upload our actual image
+            out.println("Upload Path : "+uploadPath);
+
+            // Uploading our selected image into the images folder
+
+            try{
+
+                FileOutputStream fos=new FileOutputStream(uploadPath);
+                InputStream is=file.getInputStream();
+
+                byte[] data=new byte[is.available()];
+                is.read(data);
+                fos.write(data);
+                fos.close();
+
+            }
+
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            
             
             out.println(fechaActual);
             
@@ -72,7 +114,7 @@ public class registro_imagen extends HttpServlet {
             out.println("<br>Creator: " + creator);
             out.println("<br>Fecha C: " + capture_date);
             out.println("<br>Fecha S: " + storage_date);
-            out.println("<br>Imagen: " + filename);
+            out.println("<br>Imagen: " + imageFileName);
             
             
             String query;
@@ -98,7 +140,7 @@ public class registro_imagen extends HttpServlet {
             statement.setString(5, creator); // LLave foranea de Usuario
             statement.setString(6, capture_date);
             statement.setString(7, storage_date);
-            statement.setString(8, filename);   
+            statement.setString(8, imageFileName);   
             //out.println("Cargado registros");
             statement.executeUpdate(); 
             //out.println("<br>Id usuario = " + rs.getString("title"));
@@ -143,7 +185,8 @@ public class registro_imagen extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        //processRequest(request, response);
+        response.getWriter().append("Served at: ").append(request.getContextPath());
     }
 
     /**
