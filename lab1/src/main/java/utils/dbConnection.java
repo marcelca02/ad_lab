@@ -69,6 +69,15 @@ public class dbConnection {
         else return null;
     }
     
+    public void deleteImage(int id) throws SQLException {
+        
+        String query = "DELETE FROM IMAGENES WHERE ID = ?";
+        PreparedStatement statement = c.prepareStatement(query);
+        statement.setString(1, Integer.toString(id));
+        
+        statement.executeUpdate();
+    } 
+    
     
     
 }
