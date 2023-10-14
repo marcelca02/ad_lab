@@ -68,7 +68,7 @@
             <div class="sidebar">
                 <ul class="menu">
                     <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
-                    <li><a href="#">Listar Imagenes</a></li>
+                    <li><a href="/lab1/listaImagenes.jsp">Listar Imagenes</a></li>
                     <li><a href="#">Burcar Imagen</a></li>
                     <li><a href="#">Cerrar Sesion</a></li>
                 </ul>

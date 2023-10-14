@@ -14,67 +14,175 @@
 <%@ page import= "java.sql.ResultSet" %>
 <%@ page import= "java.sql.SQLException" %>
 
-<%@ page import="java.io.File" %>
-<%@ page import="java.util.Arrays" %>
+
+<%@ page import="classes.Image" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Display Image</title>
-</head>
-<body>
-<h1 style="color:red" align="center">DISPLAY IMAGE DETAIL</h1>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Menu</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                display: flex;
+                height: 100vh;
+                flex-direction: column;
+            }
 
-<div align="center">
+            .navbar {
+                background-color: #333;
+                color: #fff;
+                padding: 10px;
+                text-align: center;
+                width: 100%;
+            }
 
-<form action="lista_imagenes" method="post">
-   Enter Image Id :
-   <input type="number" name="imageId">
-   <input type="submit" value="Display Image">
-</form>
+            .content {
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+            }
 
-</div>
+            .sidebar {
+                background-color: #f4f4f4;
+                width: 250px;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            }
 
-<hr>
+            .menu {
+                list-style: none;
+                padding: 0;
+            }
 
-<%
-    String imgFileName=(String)request.getAttribute("img");
-    String imgId=(String)request.getAttribute("id");
-    System.out.println(imgFileName);
-    System.out.println("asdfsdfsdf");
-%>
+            .menu li {
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+            }
 
-<div align="center">
-     <table border="5px" style="width:600px">
-          <tr>
-              <th>Image Id </th>
-              <th>Image</th>
-          </tr>
-         
-         <%
-             
-             if(imgFileName!="" && imgId!="")
-             {
-         %>
-          
-          <tr>
-              <td><%=imgId %></td>
-              <td><img src="images/<%=imgFileName%>" style="width:300px"></td>
-          </tr>
-        <%
-             }
-        %>  
-     </table>
-     
-     <c:forEach var="img" items="${data}">
-         
-         
-         
-     </c:forEach>
-     
-     
-</div>
+            .menu li a {
+                text-decoration: none;
+                color: #333;
+            }
 
-</body>
+            .main-content {
+                flex-grow: 1;
+                padding: 20px;
+            }
+            
+            
+            .image-container {
+                display: flex;
+                align-items: center;
+                border-bottom: 1px solid black; /* Agrega un borde inferior a cada imagen */
+                padding: 10px; /* Espacio entre la imagen y los atributos */
+            }
+
+            .image-container img {
+                width: 300px;
+                margin-right: 2px; /* Espacio entre la imagen y los atributos de texto */
+            }
+
+            .image-attributes {
+                flex-grow: 1;
+                text-align: left; /* Centra el texto */
+                margin-left: 10px;
+            }
+            .attribute-label {
+                font-weight: bold; /* Pone el texto en negritas */
+            }
+            
+            
+            .button-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .button-container button {
+                margin: 5px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div class="navbar">
+            <h1>Lista de Imagenes</h1>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <ul class="menu">
+                    <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
+                    <li><a href="/lab1/listaImagenes.jsp">Listar Imagenes</a></li>
+                    <li><a href="#">Buscar Imagen</a></li>
+                    <li><a href="#">Cerrar Sesion</a></li>
+                </ul>
+            </div>
+            <div class="main-content">
+                <h2>Imagenes</h2>
+                <div align="center">
+
+                    <%
+
+
+                        Connection connection = DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
+
+                        String query;
+                        PreparedStatement statement;
+
+                        Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+                        // create a database connection
+                        connection = DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
+
+                        query = "select * from image";
+                        statement = connection.prepareStatement(query);
+                        ResultSet rs = statement.executeQuery();         
+
+                        List<Image> images = new ArrayList<>();
+
+                        while (rs.next()) {
+                            Image image = new Image();
+                            image.setId(rs.getInt("id"));
+                            image.setTitle(rs.getString("title"));
+                            image.setFilename(rs.getString("filename"));
+                            images.add(image);
+                        }
+
+                        request.setAttribute("images", images);
+                        //request.getRequestDispatcher("tuPagina.jsp").forward(request, response);
+
+
+                    %>
+
+                    <table border="1">
+                         <c:forEach var="image" items="${images}">
+                            <div class="image-container">
+                                <img src="images/${image.filename}" alt="Imagen" />
+                                <div class="image-attributes">
+                                    <div><span class="attribute-label">ID:</span> ${image.id}</div>
+                                    <div><span class="attribute-label">Title:</span> ${image.title}</div>
+                                    <div><span class="attribute-label">Description:</span> ${image.description}</div>
+                                    <div><span class="attribute-label">Palabras:</span> ${image.keywords}</div>
+                                    <div><span class="attribute-label">Creador:</span> ${image.author}</div>
+                                    <div><span class="attribute-label">Autor:</span> ${image.creator}</div>
+                                    <div><span class="attribute-label">CaptureDate:</span> ${image.captureDate}</div>
+                                    <div><span class="attribute-label">StorageDate:</span> ${image.storageDate}</div>
+                                    <div><span class="attribute-label">Nombre Archivo:</span> ${image.filename}</div>
+                                </div>
+                                <div class="button-container">
+                                    <button onclick="window.location.href='/lab1/error.jsp'">Modificar</button>
+                                    <button onclick="window.location.href='/lab1/error.jsp'">Eliminar</button>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
