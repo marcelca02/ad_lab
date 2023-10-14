@@ -8,6 +8,7 @@
     <name>lab1-1.0-SNAPSHOT</name>
     
     <properties>
+        <property name="alternatedocroot_1" value="from=/images/* dir=/var/webapp/lab1"/>
         <maven.compiler.release>11</maven.compiler.release>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,6 +22,18 @@
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>${jakartaee}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.19.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.4.16</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     

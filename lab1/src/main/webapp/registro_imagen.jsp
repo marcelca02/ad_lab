@@ -75,18 +75,18 @@
             </div>
             <div class="main-content">
                 <h2>Registrar Imagen</h2>
-                <form action = "registro_imagen" method="POST">
+                <form action = "registro_imagen" method="POST" enctype="multipart/form-data" onsubmit="return previewImage();>
                     <label for="titulo">Titulo:</label>
-                    <input type="text" id="title" name="title"><br><br>
+                    <input type="text" id="title" name="title" required><br><br>
 
                     <label for="descripcion">Descripcion:</label><br>
-                    <textarea id="descripcion" name="description" rows="4" cols="50"></textarea><br><br>
+                    <textarea id="descripcion" name="description" rows="4" cols="50"  required></textarea><br><br>
 
                     <label for="palabras_clave">Palabras clave:</label>
-                    <input type="text" id="palabras_clave" name="keywords"><br><br>
+                    <input type="text" id="palabras_clave" name="keywords" required><br><br>
 
                     <label for="autor">Autor:</label>
-                    <input type="text" id="autor" name="author"><br><br>
+                    <input type="text" id="autor" name="author" required><br><br>
 
                     <label for="creador">Creador:</label>
                     <input type="text" id="creador" name="creator"><br><br>
@@ -98,27 +98,51 @@
                     <input type="date" id="fecha_ingreso" name="storage_date"><br><br>
 
                     <label for="nombre_imagen">Nombre de imagen:</label>
-                    <input type="file" id="imagen" name="filename" accept="image/*"><br><br>
+                    <input type="file" id="imagen" name="filename" accept="image/*" onchange="previewImage(event)">
 
                     
-                    <label for="local_date">Fecha local:</label>
                     
                     <% 
                         
                         
-                        out.println("<p>El valor del atributo es: ${nombreAtributo}</p>");
+                        out.println("");
                  
                     %>
                     
-                    
+                    <br>
+                    <br>
                     <input type="submit" value="Enviar">
                     <input type="reset" value="Limpiar">
-                
-                
                     
+                    <div id="imagePreview" style="display:none;">
+                        <h4>Imagen:</h4>
+                        <div align="center">
+                            <img id="preview" src="" alt="Image Preview" style="max-height: 300px;">
+                        </div>
+                       
+                    </div>
                 </form>
                 
             </div>
         </div>
+        <script>
+            function previewImage(event) {
+                var input = event.target;
+                var preview = document.getElementById('preview');
+                var previewContainer = document.getElementById('imagePreview');
+
+                var file = input.files[0];
+                var reader = new FileReader();
+
+                reader.onload = function() {
+                    preview.src = reader.result;
+                    previewContainer.style.display = 'block';
+                }
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+        </script>            
     </body>
 </html>
