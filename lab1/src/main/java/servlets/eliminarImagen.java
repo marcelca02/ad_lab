@@ -4,10 +4,6 @@
  */
 package servlets;
 
-import classes.Image;
-import utils.dbConnection;
-
-
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,48 +12,54 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import utils.dbConnection;
 
 /**
  *
  * @author marcel
  */
-@WebServlet(name = "modificarImagen", urlPatterns = {"/modificarImagen"})
-public class modificarImagen extends HttpServlet {
+@WebServlet(name = "eliminarImagen", urlPatterns = {"/eliminarImagen"})
+public class eliminarImagen extends HttpServlet {
 
-    
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        Image img = (Image) session.getAttribute("image");
+        String user = (String) session.getAttribute("username");
+        user = "Silvia";
         
-        int id = img.getId();
-        
-        String title = request.getParameter("title");
-        String keywords = request.getParameter("key");
-        String description = request.getParameter("description");
         String filename = request.getParameter("filename");
         
         try {
             dbConnection db = new dbConnection();
-            if (!db.isOwner(id, img.getCreator())) {
-                response.sendRedirect("./error.jsp");
+            int id = db.getIdFromFilename(filename);
+            if (id != -1 && db.isOwner(id, user)) {
+                db.deleteImage(id);
+                // ELIMINAR FICHERO
+                response.sendRedirect("./menu.jsp");
             } 
-            else {
-                db.modifyImage(id, title, description, keywords, filename);
-                // CHANGE NAME FILE
-            }
+            // Image exists and user is the creator
+            else response.sendRedirect("/lab1/error.jsp");
             db.closeDb();
-        } 
-        catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(modificarImagen.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException | SQLException ex) {
+            response.sendRedirect("/lab1/error.jsp");
         }
     }
 
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
     @Override
     public String getServletInfo() {
         return "Short description";
