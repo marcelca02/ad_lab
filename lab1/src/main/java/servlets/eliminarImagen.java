@@ -4,27 +4,23 @@
  */
 package servlets;
 
-import utils.dbConnection;
-
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import utils.dbConnection;
 
 /**
  *
  * @author marcel
  */
-@WebServlet(name = "login", urlPatterns = {"/login"})
-public class login extends HttpServlet {
+@WebServlet(name = "eliminarImagen", urlPatterns = {"/eliminarImagen"})
+public class eliminarImagen extends HttpServlet {
+
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -36,28 +32,26 @@ public class login extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       // Get login form parameters
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
         
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-          
+        HttpSession session = request.getSession();
+        String user = (String) session.getAttribute("username");
+        user = "Silvia";
+        
+        String filename = request.getParameter("filename");
+        
+        try {
             dbConnection db = new dbConnection();
-            if (db.isLoginCorrect(username, password) != null) {
-                db.closeDb();
-                // Set session
-                HttpSession session = request.getSession();
-                session.setAttribute("username",username);
-                Cookie uNameCookie = new Cookie("username",username);
-                response.addCookie(uNameCookie);
-                // Redirect
-                response.sendRedirect("/lab1/menu.jsp");
-            }
+            int id = db.getIdFromFilename(filename);
+            if (id != -1 && db.isOwner(id, user)) {
+                db.deleteImage(id);
+                // ELIMINAR FICHERO
+                response.sendRedirect("./menu.jsp");
+            } 
+            // Image exists and user is the creator
             else response.sendRedirect("/lab1/error.jsp");
-            
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+            db.closeDb();
+        } catch (ClassNotFoundException | SQLException ex) {
+            response.sendRedirect("/lab1/error.jsp");
         }
     }
 
