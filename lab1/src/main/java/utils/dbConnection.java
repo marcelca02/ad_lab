@@ -45,7 +45,7 @@ public class dbConnection {
     
     public boolean isOwner(int id, String creator) throws ClassNotFoundException, SQLException {
 
-        String query = "SELECT * FROM USUARIOS WHERE ID = ? AND CREATOR = ?";
+        String query = "SELECT * FROM IMAGE WHERE ID = ? AND CREATOR = ?";
         PreparedStatement statement = c.prepareStatement(query);
         
         statement.setString(1,Integer.toString(id));
@@ -68,6 +68,27 @@ public class dbConnection {
         if (res.next()) return username;
         else return null;
     }
+    
+    public int getIdFromFilename(String filename) throws SQLException {
+        
+        String query = "SELECT * FROM IMAGE WHERE FILENAME = ?";
+        PreparedStatement statement = c.prepareStatement(query);
+        statement.setString(1, filename);
+
+        ResultSet res = statement.executeQuery();
+
+        if (res.next()) return res.getInt("ID");
+        else return -1;
+    }
+    
+    public void deleteImage(int id) throws SQLException {
+        
+        String query = "DELETE FROM IMAGE WHERE ID = ?";
+        PreparedStatement statement = c.prepareStatement(query);
+        statement.setString(1, Integer.toString(id));
+        
+        statement.executeUpdate();
+    } 
     
     
     
