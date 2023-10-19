@@ -14,15 +14,22 @@
     </head>
     <body>
         <div class="navbar">
-            <h1>Hola</h1>
+        <%= session.getAttribute("username") %>
+                
+        <% 
+        if (session.getAttribute("username") == null) {
+            response.sendRedirect("/lab1/listaImagenes.jsp");
+        }
+        %>
+            <h1>Modificar Imagen</h1>
         </div>
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
                     <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
                     <li><a href="/lab1/listaImagenes.jsp">Listar Imagenes</a></li>
-                    <li><a href="#">Buscar Imagen</a></li>
-                    <li><a href="#">Cerrar Sesion</a></li>
+                    <li><a href="/lab1/buscaImagen.jsp">Buscar Imagen</a></li>
+                    <li><a href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
                 </ul>
             </div>
             <div class="main-content">

@@ -18,18 +18,13 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
-                    <li><a href="/lab1/listaImagenes.jsp">Listar Imagenes</a></li>
-                    <li><a href="#">Buscar Imagen</a></li>
-                    <li><a href="#">Cerrar Sesion</a></li>
+                    <li><a href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
                 </ul>
             </div>
-            <h1>Eliminar imagen</h1>
-            <form action="eliminarImagen" method="post">
-                <input name="filename" placeholder="Nombre del archivo">
-                <input type="submit" value="Enviar"><br><br></input>
-            </form>
-            <li><a href="./menu.jsp">Menú</a></li>
+            <div class="main-content">
+                <h1>Imagen Eliminada</h1>
+                <li><a href="./menu.jsp">Menú</a></li>
+            </div>
         </div>
     </body>
 </html>

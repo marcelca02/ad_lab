@@ -4,6 +4,7 @@
  */
 package servlets;
 
+import classes.Image;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -32,24 +33,24 @@ public class eliminarImagen extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
         String user = (String) session.getAttribute("username");
         
-        String filename = (String) session.getAttribute("imagen");
+        Image img = (Image) session.getAttribute("imagen");
+        String filename = img.getFilename();
         
         try {
             dbConnection db = new dbConnection();
-            int id = db.getIdFromFilename(filename);
-            if (id != -1 && db.isOwner(id, user)) {
-                db.deleteImage(id);
+            if (db.isOwner(img.getId(), user)) {
+                db.deleteImage(img.getId());
                 File imagen = new File("/var/webapp/lab1/images/"+filename);
                 FileInputStream readImage = new FileInputStream(imagen);
                 readImage.close();
                 imagen.delete();
-                response.sendRedirect("./menu.jsp");
+                response.sendRedirect("/lab1/eliminarImagen.jsp");
             } 
             // Image exists and user is the creator
             else response.sendRedirect("/lab1/error.jsp");
