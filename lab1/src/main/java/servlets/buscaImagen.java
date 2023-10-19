@@ -12,21 +12,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import utils.dbConnection;
+
+import classes.Image;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Max Pasten
  */
-@WebServlet(name = "lista_imagenes", urlPatterns = {"/lista_imagenes"})
-public class lista_imagenes extends HttpServlet {
+@WebServlet(name = "buscaImagen", urlPatterns = {"/buscaImagen"})
+public class buscaImagen extends HttpServlet {
 
-    Connection connection = null;
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -77,61 +76,37 @@ public class lista_imagenes extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //processRequest(request, response);
+        
+        
+        
         System.out.println("In do post method of Display Image servlet.");
-        String imageId=request.getParameter("imageId");
-        int id=Integer.parseInt(imageId);
-
-        //getting database connection (jdbc code)
-        int imgId=0;
-        String imgFileName=null;
+       
+        
+        String date_start = request.getParameter("fecha_inicio");
+        String date_end = request.getParameter("fecha_fin");
+        List<Image> images = new ArrayList<>();
+        
         try {
-            String query;
-            PreparedStatement statement;
-
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-
-            // create a database connection
-            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
-            //Class.forName("com.mysql.cj.jdbc.Driver");
-            //connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/imageTutorial","root","your password");
-            //Statement stmt;
-            //String query="select * from image";
-            //stmt=connection.createStatement();
-            //ResultSet rs=stmt.executeQuery(query);
-            query = "SELECT * FROM PR2.IMAGE ";
-            statement = connection.prepareStatement(query);
-            ResultSet rs = statement.executeQuery();    
-            //out.println("Esto pasa en el BACKEND");
-            System.out.println("QUERY EJECUTADO");
-            while(rs.next()){
-
-
-                System.out.println("Id image = " + rs.getString("id"));
-                System.out.println("id: " + rs.getInt("id"));
-
-
-                if(rs.getInt("id")==id){
-                        System.out.println("Entra en el IF");
-                        imgId=rs.getInt("id");
-                        imgFileName=rs.getString("filename");
-                        
-                        System.out.println("Id = " + rs.getString("id"));
-                        System.out.println("Titulo = " + rs.getString("filename"));
-                        
-                }
-            }
+            
+            dbConnection db = new dbConnection();            
+            images = db.searchImage(date_start, date_end);
+            db.closeDb();
+           
 
         }
         catch (Exception e)
         {
                 System.out.println(e);
         }
+        
+        System.out.println("Número de imágenes: " + images.size());
+        //System.out.println("ID de la primera imagen: " + images.get(0).getId());
 
         RequestDispatcher rd;
-        request.setAttribute("id",String.valueOf(imgId));  //valueOf
-        request.setAttribute("img",imgFileName);
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: " + imgFileName);
-        rd=request.getRequestDispatcher("listaImagenes.jsp");
+        request.setAttribute("images",images); 
+        //request.setAttribute("img",imgFileName);
+        System.out.println("---- LISTA DE BUSQUEDA IMAGEN ENVIADA ----");
+        rd=request.getRequestDispatcher("buscaImagen.jsp");
         rd.forward(request, response);
     }
 

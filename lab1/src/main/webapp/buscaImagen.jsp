@@ -1,25 +1,70 @@
 <%-- 
-    Document   : listaImagenes
-    Created on : 14 oct. de 2023, 12:40:57
+    Document   : buscaImagen
+    Created on : 18 oct. de 2023, 10:11:32
     Author     : Max Pasten
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@ page import="classes.Image" %>
-<%@ page import="utils.dbConnection" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Menu</title>
-        <link rel="stylesheet" type="text/css" href="css/general.css"/>
-
+        <title>Busqueda</title>
         <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                display: flex;
+                height: 100vh;
+                flex-direction: column;
+            }
+
+            .navbar {
+                background-color: #333;
+                color: #fff;
+                padding: 10px;
+                text-align: center;
+                width: 100%;
+            }
+
+            .content {
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+            }
+
+            .sidebar {
+                background-color: #f4f4f4;
+                width: 250px;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            }
+
+            .menu {
+                list-style: none;
+                padding: 0;
+            }
+
+            .menu li {
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .menu li a {
+                text-decoration: none;
+                color: #333;
+            }
+
+            .main-content {
+                flex-grow: 1;
+                padding: 20px;
+            }
+            
             
             .image-container {
                 display: flex;
@@ -41,23 +86,12 @@
             .attribute-label {
                 font-weight: bold; /* Pone el texto en negritas */
             }
-            
-            
-            .button-container {
-                display: flex;
-                justify-content: space-between;
-            }
-
-            .button-container button {
-                margin: 5px;
-            }
-            
         </style>
     </head>
     <body>
         <div class="navbar">
             <%= session.getAttribute("username") %>
-            <h1>Lista de Imagenes</h1>
+            <h1>Busqueda</h1>
         </div>
         <div class="content">
             <div class="sidebar">
@@ -69,19 +103,35 @@
                 </ul>
             </div>
             <div class="main-content">
-                <h2>Imagenes</h2>
+                
+                <h2>Busqueda por fechas</h2>
+                
+                <form action="buscaImagen" method="post">
+                    
+                    <label for="fecha_inicio">Fecha de Inicio:</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" required><br><br>
+
+                    <label for="fecha_fin">Fecha de Fin:</label>
+                    <input type="date" id="fecha_fin" name="fecha_fin" required><br><br>
+
+                    <input type="submit" value="Buscar">
+                </form>
+                
+                
+                
                 <div align="center">
 
-                    <%
-                        dbConnection db = new dbConnection();
-                        List<Image> images = db.listImages();
-                        db.closeDb();
-                        request.setAttribute("images", images);
-                        //request.getRequestDispatcher("tuPagina.jsp").forward(request, response);
+                    <%    
+                        List<Image> images = (List<Image>)request.getAttribute("images");
+                        
+                        if (images != null && !images.isEmpty()) {
+                            
                     %>
-
+                    <h3>Imagenes Encontradas</h3>
                     <table border="1">
-                         <c:forEach var="image" items="${images}">
+                        
+                        <c:forEach var="image" items="${images}"> 
+                            
                             <div class="image-container">
                                 <img src="images/${image.filename}" alt="Imagen" />
                                 <div class="image-attributes">
@@ -100,8 +150,7 @@
                                     <div><span class="attribute-label">StorageDate:</span> ${image.storageDate}</div>
                                     <div><span class="attribute-label">Nombre Archivo:</span> ${image.filename}</div>
                                     <div><a href="images/${image.filename}" target="_blank">Imagen completa</a></div>
-                                     
-                                </div>
+                                </div>                                
                                 
                                 <c:set var="userCre" value= "${image.creator}" />
                                 <% 
@@ -125,13 +174,27 @@
                                 <% 
                                     }
                                 %>
+                                
                             </div>
                         </c:forEach>
                     </table>
-
+                    <%
+                        } else {
+                    %>
+                    
+                    <div style="text-align: center; margin-top: 50vh; transform: translateY(-50%);">
+                        <h1>No se encontro ninguna imagen</h1>
+                    </div>
+                    
+                    <%
+                        }
+                    %>
 
                 </div>
+                
             </div>
         </div>
     </body>
 </html>
+
+
