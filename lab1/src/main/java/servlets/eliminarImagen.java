@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.SQLException;
 import utils.dbConnection;
 
@@ -37,14 +39,17 @@ public class eliminarImagen extends HttpServlet {
         String user = (String) session.getAttribute("username");
         user = "Silvia";
         
-        String filename = request.getParameter("filename");
+        String filename = (String) session.getAttribute("imagen");
         
         try {
             dbConnection db = new dbConnection();
             int id = db.getIdFromFilename(filename);
             if (id != -1 && db.isOwner(id, user)) {
                 db.deleteImage(id);
-                // ELIMINAR FICHERO
+                File imagen = new File("C:\\ejemplo.jpg");
+                FileInputStream readImage = new FileInputStream(imagen);
+                readImage.close();
+                imagen.delete();
                 response.sendRedirect("./menu.jsp");
             } 
             // Image exists and user is the creator

@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.Path;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,6 +42,8 @@ public class modificarImagen extends HttpServlet {
         String title = request.getParameter("title");
         String keywords = request.getParameter("key");
         String description = request.getParameter("description");
+        String author = request.getParameter("author");
+        String dateCapture = request.getParameter("date");
         String filename = request.getParameter("filename");
         
         try {
@@ -48,8 +52,15 @@ public class modificarImagen extends HttpServlet {
                 response.sendRedirect("./error.jsp");
             } 
             else {
-                db.modifyImage(id, title, description, keywords, filename);
-                // CHANGE NAME FILE
+                // Modificar nombre del archivo
+                File oldfile = new File("/var/webapp/lab1/images/"+img.getFilename());
+                File newfile = new File("/var/webapp/lab1/images/"+filename);
+                if (oldfile.renameTo(newfile)) {
+                    db.modifyImage(id, title, description, keywords, author, dateCapture, filename);
+                } else {
+                    db.modifyImage(id, title, description, keywords, author, dateCapture, img.getFilename());
+                    response.sendRedirect("/lab1/error.jsp");
+                }
             }
             db.closeDb();
         } 
