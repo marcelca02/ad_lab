@@ -4,11 +4,14 @@
  */
 package utils;
 
+import classes.Image;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class dbConnection {
@@ -89,6 +92,114 @@ public class dbConnection {
         
         statement.executeUpdate();
     } 
+    
+    public List<Image> listImages() throws SQLException {
+        
+        String query = "select * from image";
+        PreparedStatement statement = c.prepareStatement(query);
+        ResultSet rs = statement.executeQuery();         
+
+        List<Image> images = new ArrayList<>();
+
+        while (rs.next()) {
+            Image image = new Image();
+            image.setId(rs.getInt("id"));
+            image.setTitle(rs.getString("title"));
+            image.setDescription(rs.getString("description"));
+
+            String keywordsString = rs.getString("keywords"); // Obtener la cadena desde la base de datos
+            String[] keywordsArray = keywordsString.split(","); // Convertir a array de strings
+            image.setKeywords(keywordsArray); 
+
+            image.setAuthor(rs.getString("author"));
+            image.setCreator(rs.getString("creator"));
+            image.setCaptureDate(rs.getString("capture_date"));
+            image.setStorageDate(rs.getString("storage_date"));
+            image.setFilename(rs.getString("filename"));
+            images.add(image);
+        }
+        
+        return images;
+    } 
+    
+    public void registerImage(String title, String description, String keywords, String author,
+            String creator, String capture_date, String storage_date, String imageFileName) throws SQLException {
+        
+        String query = "INSERT INTO IMAGE (TITLE, DESCRIPTION, KEYWORDS, AUTHOR, CREATOR, CAPTURE_DATE, STORAGE_DATE, FILENAME) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        PreparedStatement statement = c.prepareStatement(query);           
+        statement.setString(1, title);
+        statement.setString(2, description);
+        statement.setString(3, keywords);
+        statement.setString(4, author);
+        statement.setString(5, creator); // LLave foranea de Usuario
+        statement.setString(6, capture_date);
+        statement.setString(7, storage_date);
+        statement.setString(8, imageFileName);   
+        //out.println("Cargado registros");
+        statement.executeUpdate(); 
+    } 
+    
+    public List<Image> searchImage(String date_start, String date_end) throws SQLException {
+        
+        String query = "SELECT *\n"
+                    + "FROM IMAGE\n"
+                    + "WHERE STORAGE_DATE BETWEEN ? AND ?";
+        PreparedStatement statement = c.prepareStatement(query);
+        statement.setString(1, date_start);
+        statement.setString(2, date_end);
+        ResultSet rs = statement.executeQuery();            
+
+        List<Image> images = new ArrayList<>();
+
+        while (rs.next()) {
+            Image image = new Image();
+            image.setId(rs.getInt("id"));
+            image.setTitle(rs.getString("title"));
+            image.setDescription(rs.getString("description"));
+
+            String keywordsString = rs.getString("keywords"); // Obtener la cadena desde la base de datos
+            String[] keywordsArray = keywordsString.split(","); // Convertir a array de strings
+            image.setKeywords(keywordsArray); 
+
+            image.setAuthor(rs.getString("author"));
+            image.setCreator(rs.getString("creator"));
+            image.setCaptureDate(rs.getString("capture_date"));
+            image.setStorageDate(rs.getString("storage_date"));
+            image.setFilename(rs.getString("filename"));
+            images.add(image);
+        }
+        return images;
+    }
+    
+    public List<Image> recentImage() throws SQLException {
+        
+        String query = "SELECT * FROM IMAGE ORDER BY STORAGE_DATE DESC FETCH FIRST 5 ROWS ONLY";
+        PreparedStatement statement = c.prepareStatement(query);
+        ResultSet rs = statement.executeQuery();            
+
+        List<Image> images = new ArrayList<>();
+
+        while (rs.next()) {
+            Image image = new Image();
+            image.setId(rs.getInt("id"));
+            image.setTitle(rs.getString("title"));
+            image.setDescription(rs.getString("description"));
+
+            String keywordsString = rs.getString("keywords"); // Obtener la cadena desde la base de datos
+            String[] keywordsArray = keywordsString.split(","); // Convertir a array de strings
+            image.setKeywords(keywordsArray); 
+
+            image.setAuthor(rs.getString("author"));
+            image.setCreator(rs.getString("creator"));
+            image.setCaptureDate(rs.getString("capture_date"));
+            image.setStorageDate(rs.getString("storage_date"));
+            image.setFilename(rs.getString("filename"));
+            images.add(image);
+        }
+        return images;
+    }
     
     
     

@@ -4,18 +4,11 @@
     Author     : Max Pasten
 --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
-<%@ page import= "java.sql.Connection" %>
-
-<%@ page import= "java.sql.DriverManager" %>
-<%@ page import= "java.sql.PreparedStatement" %>
-<%@ page import= "java.sql.ResultSet" %>
-<%@ page import= "java.sql.SQLException" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@ page import="classes.Image" %>
+<%@ page import="utils.dbConnection" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 
@@ -109,6 +102,7 @@
     </head>
     <body>
         <div class="navbar">
+            <%= session.getAttribute("username") %>
             <h1>Lista de Imagenes</h1>
         </div>
         <div class="content">
@@ -116,7 +110,7 @@
                 <ul class="menu">
                     <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
                     <li><a href="/lab1/listaImagenes.jsp">Listar Imagenes</a></li>
-                    <li><a href="#">Buscar Imagen</a></li>
+                    <li><a href="/lab1/buscaImagen.jsp">Buscar Imagen</a></li>
                     <li><a href="#">Cerrar Sesion</a></li>
                 </ul>
             </div>
@@ -125,36 +119,11 @@
                 <div align="center">
 
                     <%
-
-
-                        Connection connection = DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
-
-                        String query;
-                        PreparedStatement statement;
-
-                        Class.forName("org.apache.derby.jdbc.ClientDriver");
-
-                        // create a database connection
-                        connection = DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
-
-                        query = "select * from image";
-                        statement = connection.prepareStatement(query);
-                        ResultSet rs = statement.executeQuery();         
-
-                        List<Image> images = new ArrayList<>();
-
-                        while (rs.next()) {
-                            Image image = new Image();
-                            image.setId(rs.getInt("id"));
-                            image.setTitle(rs.getString("title"));
-                            image.setFilename(rs.getString("filename"));
-                            images.add(image);
-                        }
-
+                        dbConnection db = new dbConnection();
+                        List<Image> images = db.listImages();
+                        db.closeDb();
                         request.setAttribute("images", images);
                         //request.getRequestDispatcher("tuPagina.jsp").forward(request, response);
-
-
                     %>
 
                     <table border="1">
@@ -165,17 +134,43 @@
                                     <div><span class="attribute-label">ID:</span> ${image.id}</div>
                                     <div><span class="attribute-label">Title:</span> ${image.title}</div>
                                     <div><span class="attribute-label">Description:</span> ${image.description}</div>
-                                    <div><span class="attribute-label">Palabras:</span> ${image.keywords}</div>
+                                    <div><span class="attribute-label">Palabras:</span>
+                                        <c:set var="myArray" value="${image.keywords}" />
+                                        <c:forEach var="elemento" items="${myArray}" varStatus="status">
+                                            ${elemento}<c:if test="${!status.last}">,</c:if>
+                                        </c:forEach>
+                                    </div>
                                     <div><span class="attribute-label">Creador:</span> ${image.author}</div>
                                     <div><span class="attribute-label">Autor:</span> ${image.creator}</div>
                                     <div><span class="attribute-label">CaptureDate:</span> ${image.captureDate}</div>
                                     <div><span class="attribute-label">StorageDate:</span> ${image.storageDate}</div>
                                     <div><span class="attribute-label">Nombre Archivo:</span> ${image.filename}</div>
+                                    <div><a href="images/${image.filename}" target="_blank">Imagen completa</a></div>
+                                     
                                 </div>
+                                
+                                <c:set var="userCre" value= "${image.creator}" />
+                                <% 
+                                    String userCre = (String)pageContext.getAttribute("userCre");
+                                    String userLog = (String)session.getAttribute("username");
+                                    System.out.println("UserLog: " + userLog);
+                                    System.out.println("UserCre: " + userCre);
+                                    
+
+                                    if (userCre.equals(userLog)){
+                                    
+                                %>    
+                                
+
                                 <div class="button-container">
-                                    <button onclick="window.location.href='/lab1/error.jsp'">Modificar</button>
-                                    <button onclick="window.location.href='/lab1/error.jsp'">Eliminar</button>
+                                    <% session.setAttribute("imagen", image); %>
+                                    <button onclick="window.location.href='/lab1/modificarImagen.jsp'">Modificar</button>
+                                    <button onclick="window.location.href='/lab1/eliminarImagen.jsp'">Eliminar</button>
                                 </div>
+
+                                <% 
+                                    }
+                                %>
                             </div>
                         </c:forEach>
                     </table>

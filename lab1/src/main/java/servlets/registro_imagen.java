@@ -4,11 +4,10 @@
  */
 package servlets;
 
-import jakarta.servlet.RequestDispatcher;
-import java.sql.Connection;
+
+import utils.dbConnection;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.PreparedStatement;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,12 +48,8 @@ public class registro_imagen extends HttpServlet {
     }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-        
-        
-        //**********************
-        
-        
+            throws ServletException, IOException, ClassNotFoundException, SQLException{
+
         // Get registro_imagen form parameters
         String title = request.getParameter("title");
         String description = request.getParameter("description");
@@ -70,21 +64,19 @@ public class registro_imagen extends HttpServlet {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String fechaActual = sdf.format(todayDate);
         
-
-        Connection connection = null;
-        
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             
-            out.println("In do post method of Add Image servlet.");
+            dbConnection db = new dbConnection();
+            
             Part file=request.getPart("filename");
             
             // Nombre de Archivo
             String imageFileName=file.getSubmittedFileName();  // get selected image file name
-            out.println("Selected Image File Name : "+imageFileName);
+            //out.println("Selected Image File Name : "+imageFileName);
             
-            String uploadPath="C:/Users/Max Pasten/OneDrive - UCB/Documentos/NetBeansProjects/ad_lab/lab1/src/main/webapp/images/"+imageFileName;  // upload path where we have to upload our actual image
-            out.println("Upload Path : "+uploadPath);
+            String uploadPath="C:/Users/Max Pasten/OneDrive - UCB/Documentos/NetBeansProjects/ad_lab/lab1/src/main/webapp/images/"+imageFileName;
+            //out.println("Upload Path : "+uploadPath);
 
             // Uploading our selected image into the images folder
 
@@ -116,34 +108,8 @@ public class registro_imagen extends HttpServlet {
             out.println("<br>Fecha S: " + storage_date);
             out.println("<br>Imagen: " + imageFileName);
             
-            
-            String query;
-            PreparedStatement statement;
-            
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-            
-            // Create db connection
-            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/pr2;user=pr2;password=pr2");
-            
-            out.println("Conexion exitosa");
-            
-            // Create query and statement
-            // With preparedStatement, SQL Injection and other problems when inserting values in the database can be avoided
-            query = "INSERT INTO IMAGE (TITLE, DESCRIPTION, KEYWORDS, AUTHOR, CREATOR, CAPTURE_DATE, STORAGE_DATE, FILENAME) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-            statement = connection.prepareStatement(query);           
-            statement.setString(1, title);
-            statement.setString(2, description);
-            statement.setString(3, keywords);
-            statement.setString(4, author);
-            statement.setString(5, creator); // LLave foranea de Usuario
-            statement.setString(6, capture_date);
-            statement.setString(7, storage_date);
-            statement.setString(8, imageFileName);   
-            //out.println("Cargado registros");
-            statement.executeUpdate(); 
-            //out.println("<br>Id usuario = " + rs.getString("title"));
+            db.registerImage(title, description, keywords, author, creator, capture_date, storage_date, imageFileName);
+            db.closeDb();
             out.println("<br>Insertado correctamente");
             
             //out.println("Registrado");
@@ -155,22 +121,10 @@ public class registro_imagen extends HttpServlet {
             
         } catch (SQLException ex) {
             Logger.getLogger(registro_imagen.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(registro_imagen.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception e) {
             
             System.err.println(e.getMessage());
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                    
-                }
-            } catch (SQLException e) {
-                // connection close failed.
-                System.err.println(e.getMessage());
-            }
-        }
+        } 
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -200,7 +154,13 @@ public class registro_imagen extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(registro_imagen.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(registro_imagen.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
