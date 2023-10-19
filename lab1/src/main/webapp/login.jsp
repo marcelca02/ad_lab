@@ -14,6 +14,11 @@
     </head>
     <body>
         <div class="navbar">
+            <% 
+        if (session.getAttribute("username") != null) {
+            response.sendRedirect("/lab1/menu.jsp");
+        }
+            %>
             <h1>Login</h1>
         </div>
         <div class="content">
