@@ -16,8 +16,13 @@
         <div class="navbar">
             <h1>Login</h1>
         </div>
-        <div>
-            <div>
+        <div class="content">
+            <div class="sidebar">
+                <ul class="menu">
+                    <li><a href="#">Cerrar Sesion</a></li>
+                </ul>
+            </div>
+            <div class="main-content">
                 <form action="login" method="post">
                     User: <input name="username" placeholder="user"><br><br></input>
                     Password: <input name="password" placeholder="password" type="password"><br><br></input>

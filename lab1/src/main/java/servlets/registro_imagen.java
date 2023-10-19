@@ -83,7 +83,7 @@ public class registro_imagen extends HttpServlet {
             String imageFileName=file.getSubmittedFileName();  // get selected image file name
             out.println("Selected Image File Name : "+imageFileName);
             
-            String uploadPath="C:/Users/Max Pasten/OneDrive - UCB/Documentos/NetBeansProjects/ad_lab/lab1/src/main/webapp/images/"+imageFileName;  // upload path where we have to upload our actual image
+            String uploadPath="/var/webapp/lab1/images/"+imageFileName;  // upload path where we have to upload our actual image
             out.println("Upload Path : "+uploadPath);
 
             // Uploading our selected image into the images folder
