@@ -37,7 +37,6 @@ public class eliminarImagen extends HttpServlet {
         
         HttpSession session = request.getSession();
         String user = (String) session.getAttribute("username");
-        user = "Silvia";
         
         String filename = (String) session.getAttribute("imagen");
         
@@ -46,7 +45,7 @@ public class eliminarImagen extends HttpServlet {
             int id = db.getIdFromFilename(filename);
             if (id != -1 && db.isOwner(id, user)) {
                 db.deleteImage(id);
-                File imagen = new File("C:\\ejemplo.jpg");
+                File imagen = new File("/var/webapp/lab1/images/"+filename);
                 FileInputStream readImage = new FileInputStream(imagen);
                 readImage.close();
                 imagen.delete();

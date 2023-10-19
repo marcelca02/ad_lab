@@ -35,7 +35,7 @@ public class modificarImagen extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        Image img = (Image) session.getAttribute("image");
+        Image img = (Image) session.getAttribute("imagen");
         
         int id = img.getId();
         
