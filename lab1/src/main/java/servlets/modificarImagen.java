@@ -14,12 +14,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.ws.rs.Path;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.constants;
 
 
 /**
@@ -39,11 +38,7 @@ public class modificarImagen extends HttpServlet {
         
         String imageId = request.getParameter("imageId");
         String imageCreator = request.getParameter("imageCreator");
-        String oldFilename = request.getParameter("filename");
-        
-        System.out.println("Servlet ID: " +imageId);
-        System.out.println("Servlet Creator: " +imageCreator);
-        System.out.println("Servlet oldfilename: " +oldFilename);
+        String oldFilename = request.getParameter("oldFilename");
         
         
         if (imageId != null) {
@@ -64,16 +59,16 @@ public class modificarImagen extends HttpServlet {
                 } 
                 else {
                     // Modificar nombre del archivo
-                    File oldfile = new File("C:\\Users\\Max Pasten\\lab1\\images\\"+oldFilename);
-                    File newfile = new File("C:\\Users\\Max Pasten\\lab1\\images\\"+filename);
+                    File oldfile = new File(constants.IMAGESDIR+oldFilename);
+                    File newfile = new File(constants.IMAGESDIR+filename);
                     if (oldfile.renameTo(newfile)) {
                         db.modifyImage(id, title, description, keywords, author, dateCapture, filename);
+                        response.sendRedirect("/lab1/menu.jsp");
                     } else {
                         db.modifyImage(id, title, description, keywords, author, dateCapture, oldFilename);
                         response.sendRedirect("/lab1/error.jsp");
                     }
                 }
-                //session.setAttribute("imagen", null);
                 db.closeDb();
             } 
             catch (ClassNotFoundException | SQLException ex) {

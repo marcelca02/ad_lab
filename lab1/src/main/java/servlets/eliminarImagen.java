@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.SQLException;
+import utils.constants;
 import utils.dbConnection;
 
 /**
@@ -56,7 +57,8 @@ public class eliminarImagen extends HttpServlet {
             dbConnection db = new dbConnection();
             if (db.isOwner(id, imageCreator)) {
                 db.deleteImage(id);
-                File imagen = new File("C:\\Users\\Max Pasten\\lab1\\images\\"+filename);
+                File imagen = new File(constants.IMAGESDIR+filename);
+                //File imagen = new File("C:\\Users\\Max Pasten\\lab1\\images\\"+filename);
                 FileInputStream readImage = new FileInputStream(imagen);
                 readImage.close();
                 imagen.delete();

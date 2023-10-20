@@ -23,12 +23,23 @@
         String imageCreator = request.getParameter("imageCreator");
         request.setAttribute("imageCreator", imageCreator);
         
+        String title = request.getParameter("title");
+        request.setAttribute("title", title);
+        
+        String description = request.getParameter("description");
+        request.setAttribute("description", description);
+        
+        String keywords = request.getParameter("imageCreator");
+        request.setAttribute("keywords", keywords);
+        
+        String date = request.getParameter("date");
+        request.setAttribute("date", date);
+        
+        String author = request.getParameter("author");
+        request.setAttribute("author", author);
+        
         String oldFilename = request.getParameter("oldFilename");
         request.setAttribute("oldFilename", oldFilename);
-        
-        System.out.println("JSP: imageID: " + imageId);
-        System.out.println("JSP: imageCreator " + imageCreator);
-        System.out.println("JSP: oldFilename " + oldFilename);
         
         if (session.getAttribute("username") == null) {
             response.sendRedirect("/lab1/listaImagenes.jsp");
@@ -47,29 +58,36 @@
             </div>
             <div class="main-content">
                 <form action="modificarImagen" method="post">
-                    Título: <input name="title" value="${title}" required></input>
+                    <label2>Titulo:</label>
+                    <input name="title" value="${title}" required></input>
                     <br>
                     <br>
-                    Descripción: <input name="description" placeholder="Descripción" value="${description}" required></input>
+                    <label>Descripcion:</label><br>
+                    <textarea name="description" rows="4" cols="50" value="${description}" required></textarea>
                     <br>
                     <br>
-                    Palabras clave: <input name="key" value="${keywords}" required></input>
+                    <label>Palabras clave:</label>
+                    <input name="key" value="${keywords}" required></input>
                     <br>
                     <br>
-                    Autor: <input name="author" value="${author}" required></input>
+                    <label>Autor:</label>
+                    <input name="author" value="${author}" required></input>
                     <br>
                     <br>
-                    Fecha de captura: <input type="date" name="" value="${date}" required></input>
+                    <label>Fecha de captura:</label>
+                    <input type="date" name="date" value="${date}" required></input>
                     <br>
                     <br>
-                    Nombre del fichero: <input name="filename" value="${filename}" required><br><br></input>
+                    <label>Nombre de imagen:</label>
+                    <input name="filename" value="${oldFilename}" required><br><br></input>
                     
                     <input type="hidden" name="imageId" value="${imageId}">
                     <input type="hidden" name="imageCreator" value="${imageCreator}">
                     <input type="hidden" name="oldFilename" value="${oldFilename}">
                     
+                    
                     <input type="submit" value="Enviar"></input>
-                </form>                  
+                </form>                 
             </div>
         </div>
     </body>

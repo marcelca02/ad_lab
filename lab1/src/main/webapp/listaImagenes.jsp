@@ -114,12 +114,16 @@
                                     if (userCre.equals(userLog)){
                                     
                                 %>
-                                ta
                                 
                                 <div class="button-container">
                                     <form action="modificarImagen.jsp" method="post">
                                         <input type="hidden" name="imageId" value="${image.id}">
+                                        <input type="hidden" name="title" value="${image.title}">
+                                        <input type="hidden" name="description" value="${image.description}">
+                                        <input type="hidden" name="keywords" value="${image.keywords}">
                                         <input type="hidden" name="imageCreator" value="${image.creator}">
+                                        <input type="hidden" name="author" value="${image.author}">
+                                        <input type="hidden" name="date" value="${image.captureDate}">
                                         <input type="hidden" name="oldFilename" value="${image.filename}">
                                         <button type="submit" name="action" value="modificar">Modificar</button>
                                     </form>

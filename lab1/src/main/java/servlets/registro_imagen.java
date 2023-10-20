@@ -21,6 +21,7 @@ import java.sql.SQLException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.constants;
 
 /**
  *
@@ -72,7 +73,8 @@ public class registro_imagen extends HttpServlet {
 
             out.println("Selected Image File Name : "+imageFileName);
             
-            String uploadPath="C:\\Users\\Max Pasten\\lab1\\images\\"+imageFileName;
+            //String uploadPath="C:\\Users\\Max Pasten\\lab1\\images\\"+imageFileName;
+            String uploadPath=constants.IMAGESDIR+imageFileName;
             out.println("Upload Path : "+uploadPath);
 
             // Uploading our selected image into the images folder
@@ -92,27 +94,13 @@ public class registro_imagen extends HttpServlet {
             catch(Exception e){
                 out.println("--ERROR-- : "+e);
                 e.printStackTrace();
+                response.sendRedirect("/lab1/error.jsp");
             }
-            
-            
-            //out.println(fechaActual);
-            
-            out.println("<br>title: " + title);
-            out.println("<br>description: " + description);
-            out.println("<br>Keywords: " + keywords);
-            out.println("<br>Autor: " + author);
-            out.println("<br>Creator: " + creator);
-            out.println("<br>Fecha C: " + capture_date);
-            out.println("<br>Fecha S: " + storage_date);
-            out.println("<br>Imagen: " + imageFileName);
             
             db.registerImage(title, description, keywords, author, creator, capture_date, storage_date, imageFileName);
             db.closeDb();
-            out.println("<br>Insertado correctamente");
             
-            //out.println("Registrado");
-          
-            
+            response.sendRedirect("/lab1/menu.jsp");
             /* TODO output your page here. You may use following sample code. */
             
             
@@ -120,7 +108,6 @@ public class registro_imagen extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(registro_imagen.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception e) {
-            
             System.err.println(e.getMessage());
         } 
     }
