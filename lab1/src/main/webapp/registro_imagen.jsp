@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,6 +33,17 @@
                     <li><a href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
                 </ul>
             </div>
+            
+            <%
+                // Fecha Actual
+                Date todayDate = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String fechaActual = sdf.format(todayDate);
+                
+                System.out.println("Fecha actual: " + fechaActual);
+
+            %>    
+            
             <div class="main-content">
                 <h2>Registrar Imagen</h2>
                 <form action = "registro_imagen" method="POST" enctype="multipart/form-data" onsubmit="return previewImage();>
@@ -46,14 +59,15 @@
                     <label for="autor">Autor:</label>
                     <input type="text" id="autor" name="author" required><br><br>
 
+                    
                     <label for="creador">Creador:</label>
-                    <input type="text" id="creador" name="creator"><br><br>
+                    <input type="text" id="creador" name="creator" value="<%= session.getAttribute("username") %>" ><br><br>
 
                     <label for="fecha_captura">Fecha de captura:</label>
                     <input type="date" id="fecha_captura" name="capture_date"><br><br>
 
                     <label for="fecha_ingreso">Fecha de ingreso:</label>
-                    <input type="date" id="fecha_ingreso" name="storage_date"><br><br>
+                    <input type="date" id="fecha_ingreso" name="storage_date" value="<%= fechaActual %>" ><br><br>
 
                     <label for="nombre_imagen">Nombre de imagen:</label>
                     <input type="file" id="imagen" name="filename" accept="image/*" onchange="previewImage(event)">

@@ -18,8 +18,7 @@ import jakarta.servlet.http.Part;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,9 +59,6 @@ public class registro_imagen extends HttpServlet {
         String storage_date = request.getParameter("storage_date");
         //String filename = request.getParameter("filename");
         
-        Date todayDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaActual = sdf.format(todayDate);
         
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -73,15 +69,11 @@ public class registro_imagen extends HttpServlet {
             
             // Nombre de Archivo
             String imageFileName=file.getSubmittedFileName();  // get selected image file name
-            //out.println("Selected Image File Name : "+imageFileName);
 
-            String uploadPath="/var/webapp/lab1/images/"+imageFileName;  // upload path where we have to upload our actual image
-            //out.println("Upload Path : "+uploadPath);
-            /*
-            String uploadPath="C:/Users/Max Pasten/OneDrive - UCB/Documentos/NetBeansProjects/ad_lab/lab1/src/main/webapp/images/"+imageFileName;
-            //out.println("Upload Path : "+uploadPath);
-            */
-
+            out.println("Selected Image File Name : "+imageFileName);
+            
+            String uploadPath="C:\\Users\\Max Pasten\\lab1\\images\\"+imageFileName;
+            out.println("Upload Path : "+uploadPath);
 
             // Uploading our selected image into the images folder
 
@@ -98,11 +90,12 @@ public class registro_imagen extends HttpServlet {
             }
 
             catch(Exception e){
+                out.println("--ERROR-- : "+e);
                 e.printStackTrace();
             }
             
             
-            out.println(fechaActual);
+            //out.println(fechaActual);
             
             out.println("<br>title: " + title);
             out.println("<br>description: " + description);

@@ -113,13 +113,20 @@
 
                                     if (userCre.equals(userLog)){
                                     
-                                %>    
+                                %>
                                 ta
-
+                                
                                 <div class="button-container">
-                                    <% session.setAttribute("imagen", image); %>
-                                    <button onclick="window.location.href='/lab1/modificarImagen.jsp'">Modificar</button>
-                                    <button onclick="window.location.href='/lab1/eliminarImagen'">Eliminar</button>
+                                    <form action="modificarImagen.jsp" method="post">
+                                        <input type="hidden" name="imageId" value="${image.id}">
+                                        <input type="hidden" name="imageCreator" value="${image.creator}">
+                                        <button type="submit" name="action" value="modificar">Modificar</button>
+                                    </form>
+                                    <form action="eliminarImagen" method="post">
+                                        <input type="hidden" name="imageId" value="${image.id}">
+                                        <input type="hidden" name="imageCreator" value="${image.creator}">
+                                        <button type="submit">Eliminar</button>
+                                    </form>
                                 </div>
 
                                 <% 
