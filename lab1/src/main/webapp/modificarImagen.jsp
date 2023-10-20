@@ -13,12 +13,6 @@
     </head>
     <body>
         <h1>Modificar Imagen</h1>
-        <%
-            int imageId = Integer.parseInt(request.getParameter("imageId"));
-            
-            System.out.println("ImageID: " + imageId);
-
-            %>
         <div>
             <form action="modificarImagen" method="post">
                 Título: <input name="title" value="${title}" ></input>
