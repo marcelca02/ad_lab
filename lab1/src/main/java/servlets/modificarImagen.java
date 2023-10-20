@@ -34,12 +34,21 @@ public class modificarImagen extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        HttpSession session = request.getSession();
-        Image img = (Image) session.getAttribute("imagen");
+        //HttpSession session = request.getSession();
+        //Image img = (Image) session.getAttribute("imagen");
         
-        if (img != null) {
+        String imageId = request.getParameter("imageId");
+        String imageCreator = request.getParameter("imageCreator");
+        String oldFilename = request.getParameter("filename");
         
-            int id = img.getId();
+        System.out.println("Servlet ID: " +imageId);
+        System.out.println("Servlet Creator: " +imageCreator);
+        System.out.println("Servlet oldfilename: " +oldFilename);
+        
+        
+        if (imageId != null) {
+        
+            int id = Integer.parseInt(imageId);
 
             String title = request.getParameter("title");
             String keywords = request.getParameter("key");
@@ -50,21 +59,21 @@ public class modificarImagen extends HttpServlet {
 
             try {
                 dbConnection db = new dbConnection();
-                if (!db.isOwner(id, img.getCreator())) {
+                if (!db.isOwner(id, imageCreator)) {
                     response.sendRedirect("./error.jsp");
                 } 
                 else {
                     // Modificar nombre del archivo
-                    File oldfile = new File("/var/webapp/lab1/images/"+img.getFilename());
-                    File newfile = new File("/var/webapp/lab1/images/"+filename);
+                    File oldfile = new File("C:\\Users\\Max Pasten\\lab1\\images\\"+oldFilename);
+                    File newfile = new File("C:\\Users\\Max Pasten\\lab1\\images\\"+filename);
                     if (oldfile.renameTo(newfile)) {
                         db.modifyImage(id, title, description, keywords, author, dateCapture, filename);
                     } else {
-                        db.modifyImage(id, title, description, keywords, author, dateCapture, img.getFilename());
+                        db.modifyImage(id, title, description, keywords, author, dateCapture, oldFilename);
                         response.sendRedirect("/lab1/error.jsp");
                     }
                 }
-                session.setAttribute("imagen", null);
+                //session.setAttribute("imagen", null);
                 db.closeDb();
             } 
             catch (ClassNotFoundException | SQLException ex) {

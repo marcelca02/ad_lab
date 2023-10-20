@@ -34,7 +34,7 @@ public class dbConnection {
     public void modifyImage(int id, String title, String description, String keywords, String author, String dateCapture, String filename) throws ClassNotFoundException, SQLException {       
 
         // Create query and statement
-        String query = "UPDATE IMAGE SET TITLE = ?, DESCRIPTION = ?, KEYWORDS = ?, AUTHOR = ?, CAPTURE_DATE = ? FILENAME = ? WHERE ID = ?";
+        String query = "UPDATE IMAGE SET TITLE = ?, DESCRIPTION = ?, KEYWORDS = ?, AUTHOR = ?, CAPTURE_DATE = ?, FILENAME = ? WHERE ID = ?";
         PreparedStatement statement = c.prepareStatement(query);
 
         statement.setString(1, title);
@@ -42,8 +42,8 @@ public class dbConnection {
         statement.setString(3, keywords);
         statement.setString(4, author);
         statement.setString(5, dateCapture);
-        statement.setString(4,filename);
-        statement.setString(5, Integer.toString(id));
+        statement.setString(6,filename);
+        statement.setString(7, Integer.toString(id));
 
         statement.executeUpdate();
     }

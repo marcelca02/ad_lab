@@ -36,17 +36,27 @@ public class eliminarImagen extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        HttpSession session = request.getSession();
-        String user = (String) session.getAttribute("username");
+        //HttpSession session = request.getSession();
+        //String user = (String) session.getAttribute("username");
         
-        Image img = (Image) session.getAttribute("imagen");
-        String filename = img.getFilename();
+        //Image img = (Image) session.getAttribute("imagen");
+        //String filename = img.getFilename();
+        
+        String imageId = request.getParameter("imageId");
+        String imageCreator = request.getParameter("imageCreator");
+        String filename = request.getParameter("filename");
+        
+        System.out.println("Servlet ID: " +imageId);
+        System.out.println("Servlet Creator: " +imageCreator);
+        System.out.println("Servlet oldfilename: " +filename);
+        
+        int id = Integer.parseInt(imageId);
         
         try {
             dbConnection db = new dbConnection();
-            if (db.isOwner(img.getId(), user)) {
-                db.deleteImage(img.getId());
-                File imagen = new File("/var/webapp/lab1/images/"+filename);
+            if (db.isOwner(id, imageCreator)) {
+                db.deleteImage(id);
+                File imagen = new File("C:\\Users\\Max Pasten\\lab1\\images\\"+filename);
                 FileInputStream readImage = new FileInputStream(imagen);
                 readImage.close();
                 imagen.delete();

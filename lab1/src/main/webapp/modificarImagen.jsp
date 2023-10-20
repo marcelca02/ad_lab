@@ -17,6 +17,19 @@
         <%= session.getAttribute("username") %>
                 
         <% 
+        int imageId = Integer.parseInt(request.getParameter("imageId"));
+        request.setAttribute("imageId", imageId);
+        
+        String imageCreator = request.getParameter("imageCreator");
+        request.setAttribute("imageCreator", imageCreator);
+        
+        String oldFilename = request.getParameter("oldFilename");
+        request.setAttribute("oldFilename", oldFilename);
+        
+        System.out.println("JSP: imageID: " + imageId);
+        System.out.println("JSP: imageCreator " + imageCreator);
+        System.out.println("JSP: oldFilename " + oldFilename);
+        
         if (session.getAttribute("username") == null) {
             response.sendRedirect("/lab1/listaImagenes.jsp");
         }
@@ -50,6 +63,11 @@
                     <br>
                     <br>
                     Nombre del fichero: <input name="filename" value="${filename}" required><br><br></input>
+                    
+                    <input type="hidden" name="imageId" value="${imageId}">
+                    <input type="hidden" name="imageCreator" value="${imageCreator}">
+                    <input type="hidden" name="oldFilename" value="${oldFilename}">
+                    
                     <input type="submit" value="Enviar"></input>
                 </form>                  
             </div>
