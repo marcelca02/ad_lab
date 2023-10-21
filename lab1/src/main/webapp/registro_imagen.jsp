@@ -41,6 +41,10 @@
                 String fechaActual = sdf.format(todayDate);
                 
                 System.out.println("Fecha actual: " + fechaActual);
+                request.setAttribute("fechaActual", fechaActual);
+                
+                String creator = (String)session.getAttribute("username");
+                request.setAttribute("creator", creator);
 
             %>    
             
@@ -61,13 +65,13 @@
 
                     
                     <label for="creador">Creador:</label>
-                    <input type="text" id="creador" name="creator" value="<%= session.getAttribute("username") %>" ><br><br>
+                    <input type="text" id="creador" name="creator" value="${creator}" readonly><br><br>
 
                     <label for="fecha_captura">Fecha de captura:</label>
                     <input type="date" id="fecha_captura" name="capture_date"><br><br>
 
                     <label for="fecha_ingreso">Fecha de ingreso:</label>
-                    <input type="date" id="fecha_ingreso" name="storage_date" value="<%= fechaActual %>" ><br><br>
+                    <input type="date" id="fecha_ingreso" name="storage_date" value="${fechaActual}" readonly><br><br>
 
                     <label for="nombre_imagen">Nombre de imagen:</label>
                     <input type="file" id="imagen" name="filename" accept="image/*" onchange="previewImage(event)">

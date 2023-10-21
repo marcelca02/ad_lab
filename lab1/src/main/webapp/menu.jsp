@@ -78,7 +78,12 @@
                                     <div><span class="attribute-label">ID:</span> ${image.id}</div>
                                     <div><span class="attribute-label">Title:</span> ${image.title}</div>
                                     <div><span class="attribute-label">Description:</span> ${image.description}</div>
-                                    <div><span class="attribute-label">Palabras:</span> ${image.keywords}</div>
+                                    <div><span class="attribute-label">Palabras:</span>
+                                        <c:set var="myArray" value="${image.keywords}" />
+                                        <c:forEach var="elemento" items="${myArray}" varStatus="status">
+                                            ${elemento}<c:if test="${!status.last}">,</c:if>
+                                        </c:forEach>
+                                    </div>
                                     <div><span class="attribute-label">Creador:</span> ${image.author}</div>
                                     <div><span class="attribute-label">Autor:</span> ${image.creator}</div>
                                     <div><span class="attribute-label">CaptureDate:</span> ${image.captureDate}</div>

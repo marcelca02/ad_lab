@@ -60,6 +60,9 @@ public class registro_imagen extends HttpServlet {
         String storage_date = request.getParameter("storage_date");
         //String filename = request.getParameter("filename");
         
+        System.out.println("Fecha: "+ storage_date);
+        System.out.println("Creator:" + creator);
+        
         
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -88,6 +91,9 @@ public class registro_imagen extends HttpServlet {
                 is.read(data);
                 fos.write(data);
                 fos.close();
+                
+                
+                db.registerImage(title, description, keywords, author, creator, capture_date, storage_date, imageFileName);
 
             }
 
@@ -97,7 +103,7 @@ public class registro_imagen extends HttpServlet {
                 response.sendRedirect("/lab1/error.jsp");
             }
             
-            db.registerImage(title, description, keywords, author, creator, capture_date, storage_date, imageFileName);
+            
             db.closeDb();
             
             response.sendRedirect("/lab1/menu.jsp");
