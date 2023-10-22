@@ -29,7 +29,7 @@
         String description = request.getParameter("description");
         request.setAttribute("description", description);
         
-        String keywords = request.getParameter("imageCreator");
+        String keywords = request.getParameter("keywords");
         request.setAttribute("keywords", keywords);
         
         String date = request.getParameter("date");

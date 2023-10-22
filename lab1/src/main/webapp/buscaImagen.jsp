@@ -97,8 +97,8 @@
                                             ${elemento}<c:if test="${!status.last}">,</c:if>
                                         </c:forEach>
                                     </div>
-                                    <div><span class="attribute-label">Creador:</span> ${image.author}</div>
-                                    <div><span class="attribute-label">Autor:</span> ${image.creator}</div>
+                                    <div><span class="attribute-label">Creador:</span> ${image.creator}</div>
+                                    <div><span class="attribute-label">Autor:</span> ${image.author}</div>
                                     <div><span class="attribute-label">CaptureDate:</span> ${image.captureDate}</div>
                                     <div><span class="attribute-label">StorageDate:</span> ${image.storageDate}</div>
                                     <div><span class="attribute-label">Nombre Archivo:</span> ${image.filename}</div>
@@ -106,14 +106,15 @@
                                 </div>                                
                                 
                                 <c:set var="userCre" value= "${image.creator}" />
-                                <c:set var="imagen" value= "${image.creator}" />
+                                <c:set var="keywordsList" value= "${image.keywords}" />
                                 <% 
                                     String userCre = (String)pageContext.getAttribute("userCre");
                                     String userLog = (String)session.getAttribute("username");
-                                    System.out.println("UserLog: " + userLog);
-                                    System.out.println("UserCre: " + userCre);
                                     
-
+                                    String[] keywordsList = (String[])pageContext.getAttribute("keywordsList");
+                                    String keywords = String.join(", ", keywordsList);
+                                    request.setAttribute("keywords", keywords);
+                                    
                                     if (userCre.equals(userLog)){
                                     
                                 %>    
@@ -123,12 +124,19 @@
                                 <div class="button-container">
                                     <form action="modificarImagen.jsp" method="post">
                                         <input type="hidden" name="imageId" value="${image.id}">
+                                        <input type="hidden" name="title" value="${image.title}">
+                                        <input type="hidden" name="description" value="${image.description}">
+                                        <input type="hidden" name="keywords" value="${keywords}">
                                         <input type="hidden" name="imageCreator" value="${image.creator}">
+                                        <input type="hidden" name="author" value="${image.author}">
+                                        <input type="hidden" name="date" value="${image.captureDate}">
+                                        <input type="hidden" name="oldFilename" value="${image.filename}">
                                         <button type="submit" name="action" value="modificar">Modificar</button>
                                     </form>
-                                    <form action="eliminarImagen" method="post">
+                                    <form action="eliminarImagen" method="get">
                                         <input type="hidden" name="imageId" value="${image.id}">
                                         <input type="hidden" name="imageCreator" value="${image.creator}">
+                                        <input type="hidden" name="filename" value="${image.filename}">
                                         <button type="submit">Eliminar</button>
                                     </form>
                                 </div>
