@@ -14,7 +14,7 @@
     </head>
     <body>
         <div class="navbar">
-            <h1>Login</h1>
+            <h1>Error</h1>
         </div>
         <h1>¡Ha ocurrido un error!</h1>
       <%

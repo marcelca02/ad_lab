@@ -16,7 +16,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Menu</title>
+        <title>Menú</title>
         <link rel="stylesheet" type="text/css" href="css/general.css"/>
 
         <style>
@@ -63,13 +63,13 @@
             <div class="sidebar">
                 <ul class="menu">
                     <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
-                    <li><a href="/lab1/listaImagenes.jsp">Listar Imagenes</a></li>
+                    <li><a href="/lab1/listaImagenes.jsp">Listar Imágenes</a></li>
                     <li><a href="/lab1/buscaImagen.jsp">Buscar Imagen</a></li>
-                    <li><a href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
+                    <li><a href="/lab1/cerrarSesion">Cerrar Sesión</a></li>
                 </ul>
             </div>
             <div class="main-content">
-                <h2>Imagenes</h2>
+                <h2>Imágenes</h2>
                 <div align="center">
 
                     <%
@@ -86,9 +86,9 @@
                                 <img src="images/${image.filename}" alt="Imagen" />
                                 <div class="image-attributes">
                                     <div><span class="attribute-label">ID:</span> ${image.id}</div>
-                                    <div><span class="attribute-label">Title:</span> ${image.title}</div>
-                                    <div><span class="attribute-label">Description:</span> ${image.description}</div>
-                                    <div><span class="attribute-label">Palabras:</span>
+                                    <div><span class="attribute-label">Título:</span> ${image.title}</div>
+                                    <div><span class="attribute-label">Descriptión:</span> ${image.description}</div>
+                                    <div><span class="attribute-label">Palabras Clave:</span>
                                         <c:set var="myArray" value="${image.keywords}" />
                                         <c:forEach var="elemento" items="${myArray}" varStatus="status">
                                             ${elemento}<c:if test="${!status.last}">,</c:if>
@@ -96,8 +96,8 @@
                                     </div>
                                     <div><span class="attribute-label">Creador:</span> ${image.creator}</div>
                                     <div><span class="attribute-label">Autor:</span> ${image.author}</div>
-                                    <div><span class="attribute-label">CaptureDate:</span> ${image.captureDate}</div>
-                                    <div><span class="attribute-label">StorageDate:</span> ${image.storageDate}</div>
+                                    <div><span class="attribute-label">Fecha Captura:</span> ${image.captureDate}</div>
+                                    <div><span class="attribute-label">Fecha Registro:</span> ${image.storageDate}</div>
                                     <div><span class="attribute-label">Nombre Archivo:</span> ${image.filename}</div>
                                     <div><a href="images/${image.filename}" target="_blank">Imagen completa</a></div>
                                      

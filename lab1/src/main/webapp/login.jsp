@@ -24,13 +24,13 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a type="hidden" href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
+                    <li><a type="hidden" href="/lab1/cerrarSesion">Cerrar Sesión</a></li>
                 </ul>
             </div>
             <div class="main-content">
                 <form action="login" method="post">
-                    User: <input name="username" placeholder="user"><br><br></input>
-                    Password: <input name="password" placeholder="password" type="password"><br><br></input>
+                    Usuario: <input name="username" placeholder="user"><br><br></input>
+                    Contraseña: <input name="password" placeholder="password" type="password"><br><br></input>
                     <input type="submit" value="Enviar"></input>
                 </form>                  
             </div>

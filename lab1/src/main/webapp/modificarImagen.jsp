@@ -58,15 +58,15 @@
             </div>
             <div class="main-content">
                 <form action="modificarImagen" method="post">
-                    <label2>Titulo:</label>
+                    <label2>Título:</label>
                     <input name="title" value="${title}" required></input>
                     <br>
                     <br>
-                    <label>Descripcion:</label><br>
+                    <label>Descripción:</label><br>
                     <textarea name="description" rows="4" cols="50" value="${description}" required></textarea>
                     <br>
                     <br>
-                    <label>Palabras clave:</label>
+                    <label>Palabras Clave:</label>
                     <input name="key" value="${keywords}" required></input>
                     <br>
                     <br>
@@ -74,11 +74,11 @@
                     <input name="author" value="${author}" required></input>
                     <br>
                     <br>
-                    <label>Fecha de captura:</label>
+                    <label>Fecha Captura:</label>
                     <input type="date" name="date" value="${date}" required></input>
                     <br>
                     <br>
-                    <label>Nombre de imagen:</label>
+                    <label>Nombre Archivo:</label>
                     <input name="filename" value="${oldFilename}" required><br><br></input>
                     
                     <input type="hidden" name="imageId" value="${imageId}">
