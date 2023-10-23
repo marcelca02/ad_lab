@@ -38,15 +38,46 @@ public class buscaImagen extends HttpServlet {
         
         String date_start = request.getParameter("fecha_inicio");
         String date_end = request.getParameter("fecha_fin");
+        String authorB = request.getParameter("authorB");
+        String keywordsB = request.getParameter("keywordsB");
         List<Image> images = new ArrayList<>();
+        
+        System.out.println("DATE START: "+date_start);
+        System.out.println("DATE END: "+date_end);
+        System.out.println("Autor: "+authorB);
+        System.out.println("Keywords: "+keywordsB);
         
         try {
             
             dbConnection db = new dbConnection();            
-            images = db.searchImage(date_start, date_end);
+            
+            if (authorB.length() == 0 && keywordsB.length() == 0){
+                System.out.println("Date");
+                System.out.println("Autor: "+authorB);
+                System.out.println("Keywords: "+keywordsB);
+                images = db.searchImageDate(date_start, date_end);
+            } else if (authorB.length() != 0 && keywordsB.length() != 0){
+                System.out.println("DateAuthorKeywords");
+                System.out.println("Autor: "+authorB);
+                System.out.println("Keywords: "+keywordsB);
+                images = db.searchImageDateAuthorKeywords(date_start, date_end, authorB, keywordsB);
+            } else if (keywordsB.length() != 0 && authorB.length() == 0){
+                System.out.println("Datekeyword");
+                System.out.println("Autor: "+authorB);
+                System.out.println("Keywords: "+keywordsB);
+                images = db.searchImageDateKeywords(date_start, date_end, keywordsB);
+                
+                
+            } else if (keywordsB.length() == 0&& authorB.length() != 0){
+                System.out.println("DateAutor");
+                System.out.println("Autor: "+authorB);
+                System.out.println("Keywords: "+keywordsB);
+                images = db.searchImageDateAuthor(date_start, date_end, authorB);
+                
+            }
+            
+            
             db.closeDb();
-           
-
         }
         catch (Exception e)
         {
