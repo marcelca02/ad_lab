@@ -68,7 +68,7 @@
                     <input type="text" id="creador" name="creator" value="${creator}" readonly><br><br>
 
                     <label for="fecha_captura">Fecha de captura:</label>
-                    <input type="date" id="fecha_captura" name="capture_date"><br><br>
+                    <input type="date" id="fecha_captura" name="capture_date" required><br><br>
 
                     <label for="fecha_ingreso">Fecha de ingreso:</label>
                     <input type="date" id="fecha_ingreso" name="storage_date" value="${fechaActual}" readonly><br><br>
