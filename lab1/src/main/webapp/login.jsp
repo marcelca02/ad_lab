@@ -24,7 +24,7 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
+                    <li><a type="hidden" href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
                 </ul>
             </div>
             <div class="main-content">
