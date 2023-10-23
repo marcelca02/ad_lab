@@ -58,7 +58,7 @@
             <div class="main-content">
                 
                 <h2>Busqueda por fechas</h2>
-                
+                <p>Minimamente una busqueda por fechas:</p>
                 <form action="buscaImagen" method="post">
                     
                     <label for="fecha_inicio">Fecha de Inicio:</label>
@@ -66,6 +66,12 @@
 
                     <label for="fecha_fin">Fecha de Fin:</label>
                     <input type="date" id="fecha_fin" name="fecha_fin" required><br><br>
+                    
+                    <label for="authorB">Author:</label>
+                    <input type="text" id="authorB" name="authorB"><br><br>
+                    
+                    <label for="keywordsB">Palabras Clave:</label>
+                    <input type="text" id="keywordsB" name="keywordsB"><br><br>
 
                     <input type="submit" value="Buscar">
                 </form>

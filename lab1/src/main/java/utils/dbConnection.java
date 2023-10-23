@@ -143,7 +143,7 @@ public class dbConnection {
         statement.executeUpdate(); 
     } 
     
-    public List<Image> searchImage(String date_start, String date_end) throws SQLException {
+    public List<Image> searchImageDate(String date_start, String date_end) throws SQLException {
         
         String query = "SELECT *\n"
                     + "FROM IMAGE\n"
@@ -151,6 +151,113 @@ public class dbConnection {
         PreparedStatement statement = c.prepareStatement(query);
         statement.setString(1, date_start);
         statement.setString(2, date_end);
+        ResultSet rs = statement.executeQuery();            
+
+        List<Image> images = new ArrayList<>();
+
+        while (rs.next()) {
+            Image image = new Image();
+            image.setId(rs.getInt("id"));
+            image.setTitle(rs.getString("title"));
+            image.setDescription(rs.getString("description"));
+
+            String keywordsString = rs.getString("keywords"); // Obtener la cadena desde la base de datos
+            String[] keywordsArray = keywordsString.split(","); // Convertir a array de strings
+            image.setKeywords(keywordsArray); 
+
+            image.setAuthor(rs.getString("author"));
+            image.setCreator(rs.getString("creator"));
+            image.setCaptureDate(rs.getString("capture_date"));
+            image.setStorageDate(rs.getString("storage_date"));
+            image.setFilename(rs.getString("filename"));
+            images.add(image);
+        }
+        return images;
+    }
+    
+    public List<Image> searchImageDateAuthor(String date_start, String date_end, String author) throws SQLException {
+        
+        String query = "SELECT *\n"
+                    + "FROM IMAGE\n"
+                    + "WHERE STORAGE_DATE BETWEEN ? AND ? "
+                    + "AND AUTHOR = ?";
+        
+        PreparedStatement statement = c.prepareStatement(query);
+        statement.setString(1, date_start);
+        statement.setString(2, date_end);
+        statement.setString(3, author);
+        ResultSet rs = statement.executeQuery();            
+
+        List<Image> images = new ArrayList<>();
+
+        while (rs.next()) {
+            Image image = new Image();
+            image.setId(rs.getInt("id"));
+            image.setTitle(rs.getString("title"));
+            image.setDescription(rs.getString("description"));
+
+            String keywordsString = rs.getString("keywords"); // Obtener la cadena desde la base de datos
+            String[] keywordsArray = keywordsString.split(","); // Convertir a array de strings
+            image.setKeywords(keywordsArray); 
+
+            image.setAuthor(rs.getString("author"));
+            image.setCreator(rs.getString("creator"));
+            image.setCaptureDate(rs.getString("capture_date"));
+            image.setStorageDate(rs.getString("storage_date"));
+            image.setFilename(rs.getString("filename"));
+            images.add(image);
+        }
+        return images;
+    }
+    
+    public List<Image> searchImageDateAuthorKeywords(String date_start, String date_end, String author, String keywords) throws SQLException {
+        
+        String query = "SELECT *\n"
+                    + "FROM IMAGE\n"
+                    + "WHERE STORAGE_DATE BETWEEN ? AND ? \n"
+                    + "AND AUTHOR = ?\n"
+                    + "AND KEYWORDS LIKE ? ";
+        
+        PreparedStatement statement = c.prepareStatement(query);
+        statement.setString(1, date_start);
+        statement.setString(2, date_end);
+        statement.setString(3, author);
+        statement.setString(4, "%" + keywords + "%");
+        ResultSet rs = statement.executeQuery();            
+
+        List<Image> images = new ArrayList<>();
+
+        while (rs.next()) {
+            Image image = new Image();
+            image.setId(rs.getInt("id"));
+            image.setTitle(rs.getString("title"));
+            image.setDescription(rs.getString("description"));
+
+            String keywordsString = rs.getString("keywords"); // Obtener la cadena desde la base de datos
+            String[] keywordsArray = keywordsString.split(","); // Convertir a array de strings
+            image.setKeywords(keywordsArray); 
+
+            image.setAuthor(rs.getString("author"));
+            image.setCreator(rs.getString("creator"));
+            image.setCaptureDate(rs.getString("capture_date"));
+            image.setStorageDate(rs.getString("storage_date"));
+            image.setFilename(rs.getString("filename"));
+            images.add(image);
+        }
+        return images;
+    }
+    
+    public List<Image> searchImageDateKeywords(String date_start, String date_end, String keywords) throws SQLException {
+        
+        String query = "SELECT *\n"
+                    + "FROM IMAGE\n"
+                    + "WHERE STORAGE_DATE BETWEEN ? AND ? \n"
+                    + "AND KEYWORDS LIKE ? ";
+        
+        PreparedStatement statement = c.prepareStatement(query);
+        statement.setString(1, date_start);
+        statement.setString(2, date_end);
+        statement.setString(3, "%" + keywords + "%");
         ResultSet rs = statement.executeQuery();            
 
         List<Image> images = new ArrayList<>();
