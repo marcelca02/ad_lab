@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.dbConnection;
 
-import classes.Image;
+import utils.Image;
 import java.util.ArrayList;
 import java.util.List;
 

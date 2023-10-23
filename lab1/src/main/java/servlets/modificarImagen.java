@@ -4,7 +4,7 @@
  */
 package servlets;
 
-import classes.Image;
+import utils.Image;
 import utils.dbConnection;
 
 

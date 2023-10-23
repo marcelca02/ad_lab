@@ -4,7 +4,7 @@
  */
 package servlets;
 
-import classes.Image;
+import utils.Image;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
