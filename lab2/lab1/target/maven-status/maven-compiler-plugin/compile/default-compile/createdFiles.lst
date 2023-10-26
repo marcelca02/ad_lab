@@ -1,0 +1,11 @@
+servlets\login.class
+com\mycompany\lab1\JakartaRestConfiguration.class
+utils\dbConnection.class
+utils\Image.class
+servlets\cerrarSesion.class
+servlets\modificarImagen.class
+utils\constants.class
+com\mycompany\lab1\resources\JakartaEE91Resource.class
+servlets\buscaImagen.class
+servlets\eliminarImagen.class
+servlets\registro_imagen.class
