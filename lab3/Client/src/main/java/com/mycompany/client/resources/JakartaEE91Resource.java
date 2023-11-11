@@ -17,10 +17,13 @@ import utils.constants;
 import utils.dbConnection;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonArray;
 import jakarta.mail.MessagingException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.Image;
 
 
 /**
@@ -63,7 +66,7 @@ public class JakartaEE91Resource {
             else return Response.status(Response.Status.NOT_FOUND)
                                 .build();
         } catch (SQLException | ClassNotFoundException ex) {
-            return Response.status()
+            return Response.status(Response.Status.BAD_GATEWAY).build();
         }
         
     }
@@ -77,7 +80,6 @@ public class JakartaEE91Resource {
     * @param creator
     * @param capt_date
     * @param filename
-    * @param filePart
     * @return
     */
     @Path("register")
@@ -90,52 +92,22 @@ public class JakartaEE91Resource {
             @FormParam("author") String author, 
             @FormParam("creator") String creator, 
             @FormParam("capture") String capt_date, 
-            @FormParam("filename") String filename, 
-            @FormParam("filePart") Part filePart) {
+            @FormParam("filename") String filename){
+	    
+	    int code;
+	    String error;
         
-            String error;
-            int code;
-            
-            try {
-                String format = filePart.getContentType();
-                if(!format.equals("image/png") && !format.equals("image/jpg") && !format.equals("image/jpeg")) {
-                    error="invalidFileFormat";
-                    code=406;
-                }
-                else {
-                    // Nombre de Archivo
-                    String imageFileName= filePart.getFileName();
-                    String uploadPath=constants.IMAGESDIR+imageFileName;
-                    try{
-                        FileOutputStream fos=new FileOutputStream(uploadPath);
-                        InputStream is=filePart.getInputStream();
+	    try {
+			db.registerImage(title, description, keywords, author, creator, capt_date, capt_date, filename);
+			db.closeDb();
 
-                        byte[] data=new byte[is.available()];
-                        is.read(data);
-                        fos.write(data);
-                        fos.close();
-                        db.registerImage(title, description, keywords, author, creator, capt_date, capt_date, filename);                          
-                        db.closeDb();
-                        
-                        return Response.status(201)
-                                       .build();
-
-                    } catch (SQLException ex) {
-                        error="sqlError";
-                        code=502;
-                    } catch (MessagingException ex) {
-                        error="fileStreamError";
-                        code=502;
-                    } catch (IOException ex) {
-                        error="ioFileError";
-                        code=502;
-                    }
-               }
-            } catch (MessagingException ex) {
-                error="fileStreamError";
-                code=502;
-            }
-            JsonObject json = Json.createObjectBuilder().add("errpr",error).build();
+			return Response.ok()
+				.build();
+	    } catch (SQLException ex) {
+		    code=502;
+		    error="sqlException";
+	    }	    
+            JsonObject json = Json.createObjectBuilder().add("error",error).build();
             return Response.status(code).entity(json).build();
     }
     
@@ -148,8 +120,9 @@ public class JakartaEE91Resource {
     * @param author
     * @param creator, used for checking image ownership
     * @param capt_date
+	 * @param filename
     * @return
-    */
+    return*/
     @Path("modify")
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -160,6 +133,64 @@ public class JakartaEE91Resource {
     @FormParam("keywords") String keywords,
     @FormParam("author") String author,
     @FormParam("creator") String creator,
-    @FormParam("capture") String capt_date) {
+    @FormParam("capture") String capt_date,
+    @FormParam("filename") String filename)
+    {    
+	    String error;
+	    int code;
+	    
+	    try {
+		    //if (!db.isOwner(id, creator)) {
+		    //    code=403;
+		    //    error="invalidOwner";
+		    //}
+		    //else {
+			    db.modifyImage(Integer.parseInt(id), title, description, keywords, author, capt_date, filename);
+			    return Response.ok().build();
+		    //}
+	    } catch (ClassNotFoundException | SQLException ex) {
+		    error="";
+		    code=502;
+	    }
+	    JsonObject json = Json.createObjectBuilder().add("error",error).build();
+            return Response.status(code).entity(json).build();
     }
-}
+    
+    /**
+    * POST method to delete an existing image
+    * @param id
+    * @return
+    */
+    @Path("delete")
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteImage (@FormParam("id") String id) {
+	    try {
+		db.deleteImage(Integer.parseInt(id));
+		return Response.ok().build();
+	    } catch (SQLException ex) {
+		return Response.status(Response.Status.BAD_GATEWAY).build();
+	    }
+    }
+    
+    /**
+    * GET method to list images
+    * @return
+    */
+    @Path("list")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listImages() {
+	    try {
+		    List<Image> list = db.listImages();
+		    JsonArray json = Json.createArrayBuilder(list).build();
+
+		    return Response.ok().entity(json).build();
+		    
+	    } catch (SQLException ex) {
+		    return Response.status(Response.Status.BAD_GATEWAY).build();
+	    }
+    } 
+ 
+ }
