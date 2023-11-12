@@ -43,7 +43,7 @@ public class login extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         
-        URL url = new URL("http://localhost:8080/RestAD/login");
+        URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/login");
         // Conectar URL
         try {
             URLConnection myURLConnection = url.openConnection();

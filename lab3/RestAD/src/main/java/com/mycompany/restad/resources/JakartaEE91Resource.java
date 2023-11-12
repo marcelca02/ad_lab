@@ -19,7 +19,7 @@ import utils.dbConnection;
 
 /**
  *
- * @author 
+ * @author Marcel Calleja
  */
 @Path("jakartaee9")
 public class JakartaEE91Resource {
@@ -48,7 +48,7 @@ public class JakartaEE91Resource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@FormParam("username") String username, 
-            @FormParam("password") String password) throws SQLException, ClassNotFoundException {
+            @FormParam("password") String password) {
         try {
             if (db.isLoginCorrect(username, password) != null) {
                 return Response.ok()
