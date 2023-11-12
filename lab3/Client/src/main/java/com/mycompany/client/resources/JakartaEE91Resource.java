@@ -1,6 +1,5 @@
 package com.mycompany.client.resources;
 
-import jakarta.mail.Part;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
@@ -9,17 +8,12 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
-import utils.constants;
 import utils.dbConnection;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonArray;
-import jakarta.mail.MessagingException;
-import java.math.BigDecimal;
+import jakarta.ws.rs.PathParam;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -191,6 +185,107 @@ public class JakartaEE91Resource {
 	    } catch (SQLException ex) {
 		    return Response.status(Response.Status.BAD_GATEWAY).build();
 	    }
-    } 
+    }
+    
+    /**
+    * GET method to search images by id
+    * @param id
+    * @return
+    */
+    @Path("searchID/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchByID (@PathParam("id") int id) {
+	    try {
+		    List<Image> list = db.searchImageById(id);
+		    JsonArray json = Json.createArrayBuilder(list).build();
+		    
+		    return Response.ok().entity(json).build();
+		    
+	    } catch (SQLException ex) {
+		    return Response.status(Response.Status.BAD_GATEWAY).build();
+	    }
+    }
+    
+    /**
+    * GET method to search images by title
+    * @param title
+    * @return
+    */
+    @Path("searchTitle/{title}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchByTitle (@PathParam("title") String title) {
+	    try {
+		    List<Image> list = db.searchImageByTitle(title);
+		    JsonArray json = Json.createArrayBuilder(list).build();
+		    
+		    return Response.ok().entity(json).build();
+		    
+	    } catch (SQLException ex) {
+		    return Response.status(Response.Status.BAD_GATEWAY).build();
+	    }
+    }
+    
+    /**
+    * GET method to search images by creation date. Date format should be
+    * yyyy-mm-dd
+    * @param date
+    * @return
+    */
+    @Path("searchCreationDate/{date}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchByCreationDate (@PathParam("date") String date) {
+	    try {
+		    List<Image> list = db.searchImageDate(date, date);
+		    JsonArray json = Json.createArrayBuilder(list).build();
+		    
+		    return Response.ok().entity(json).build();
+		    
+	    } catch (SQLException ex) {
+		    return Response.status(Response.Status.BAD_GATEWAY).build();
+	    }
+    }
+    
+    /**
+    * GET method to search images by author
+    * @param author
+    * @return
+    */
+    @Path("searchAuthor/{author}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchByAuthor (@PathParam("author") String author) {
+	    try {
+		    List<Image> list = db.searchImageByAuthor(author);
+		    JsonArray json = Json.createArrayBuilder(list).build();
+		    
+		    return Response.ok().entity(json).build();
+		    
+	    } catch (SQLException ex) {
+		    return Response.status(Response.Status.BAD_GATEWAY).build();
+	    }
+    }
+    
+    /**
+    * GET method to search images by keyword
+    * @param keywords
+    * @return
+    */
+    @Path("searchKeywords/{keywords}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchByKeywords (@PathParam("keywords") String keywords) {
+	    try {
+		    List<Image> list = db.searchImageByKeywords(keywords);
+		    JsonArray json = Json.createArrayBuilder(list).build();
+		    
+		    return Response.ok().entity(json).build();
+		    
+	    } catch (SQLException ex) {
+		    return Response.status(Response.Status.BAD_GATEWAY).build();
+	    }
+    }
  
  }
