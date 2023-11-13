@@ -73,7 +73,7 @@ public class eliminarImagen extends HttpServlet {
 		    if (responsecode == HttpURLConnection.HTTP_OK){
 			    response.sendRedirect("./eliminarImagen.jsp");
 		    } else {
-			response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
+			    response.sendRedirect("./error.jsp");
 		    }
 		} catch (Exception e) {
 		    e.printStackTrace();
