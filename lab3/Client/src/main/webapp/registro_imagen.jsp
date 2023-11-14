@@ -19,7 +19,7 @@
             <%= session.getAttribute("username") %>
             <%
                 if (session.getAttribute("username") == null) {
-                    response.sendRedirect("/lab1/login.jsp");
+                    response.sendRedirect("/Client/login.jsp");
                 }
             %>
             <h1>Registro de Imagen</h1>
@@ -27,10 +27,10 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
-                    <li><a href="/lab1/listaImagenes.jsp">Listar Imágenes</a></li>
-                    <li><a href="/lab1/buscaImagen.jsp">Buscar Imagen</a></li>
-                    <li><a href="/lab1/cerrarSesion">Cerrar Sesión</a></li>
+                    <li><a href="/Client/registro_imagen.jsp">Registrar Imagen</a></li>
+                    <li><a href="/Client/listaImagenes.jsp">Listar Imágenes</a></li>
+                    <li><a href="/Client/buscaImagen.jsp">Buscar Imagen</a></li>
+                    <li><a href="/Client/cerrarSesion">Cerrar Sesión</a></li>
                 </ul>
             </div>
             
@@ -50,7 +50,7 @@
             
             <div class="main-content">
                 <h2>Registrar Imagen</h2>
-                <form action = "registro_imagen" method="POST" enctype="multipart/form-data" onsubmit="return previewImage();>
+                <form action = "registroImagen" method="POST" enctype="multipart/form-data" onsubmit="return previewImage();>
                     <label for="titulo">Título:</label>
                     <input type="text" id="title" name="title" required><br><br>
 
@@ -74,16 +74,7 @@
                     <input type="date" id="fecha_ingreso" name="storage_date" value="${fechaActual}" readonly><br><br>
 
                     <label for="nombre_imagen">Nombre Archivo:</label>
-                    <input type="file" id="imagen" name="filename" accept="image/*" onchange="previewImage(event)">
-
-                    
-                    
-                    <% 
-                        
-                        
-                        out.println("");
-                 
-                    %>
+                    <input type="file" id="imagen" name="filename" accept="image/*" onchange="previewImage(event)" required>
                     
                     <br>
                     <br>

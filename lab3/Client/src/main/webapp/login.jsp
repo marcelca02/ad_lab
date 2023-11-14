@@ -16,7 +16,7 @@
         <div class="navbar">
             <% 
         if (session.getAttribute("username") != null) {
-            response.sendRedirect("/client/menu.jsp");
+            response.sendRedirect("/Client/menu.jsp");
         }
             %>
             <h1>Login</h1>
@@ -24,7 +24,7 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a type="hidden" href="/lab1/cerrarSesion">Cerrar Sesión</a></li>
+                    <li><a type="hidden" href="/Client/cerrarSesion">Cerrar Sesión</a></li>
                 </ul>
             </div>
             <div class="main-content">

@@ -5,12 +5,15 @@
 package Servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -60,34 +63,46 @@ public class login extends HttpServlet {
         
         //Abrir una conexión HTTP
         HttpURLConnection connection =(HttpURLConnection)url.openConnection();
-        // Configurar el método de la petición a
+        // Configurar el método de la petición 
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
         // Escribir los parámetros
         try (OutputStream output = connection.getOutputStream()){
-            // Construye la cadena de datos a env
+            // Construye la cadena de datos 
             String data = "username=" + username +
                             "&password=" +password;
             
             output.write(data.getBytes("UTF-8"));
             output.close();
             
-            System.out.println("ENVIADO");
+            //System.out.println("ENVIADO");
             
             
             // Recibe la respuesta del servidor
             int responsecode = connection.getResponseCode();
             if (responsecode == HttpURLConnection.HTTP_OK){
-                // La conexión fue exitosa
-                // Puedes hacer algo con la respuesta si es necesari
-                response.getWriter( ).write("Datos enviados correctamente al servidor.");
+                
+                // Set session
+                HttpSession session = request.getSession();
+                session.setAttribute("username",username);
+                Cookie uNameCookie = new Cookie("username",username);
+                response.addCookie(uNameCookie);
+                // Redirect
+                response.sendRedirect("/Client/menu.jsp");
+
+
+        
+                
             } else {
-                response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
+                //response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
+                response.sendRedirect("/Client/error.jsp");
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("Error:"+ e.getMessage());
+            //response.getWriter().write("Error:"+ e.getMessage());
+            response.sendRedirect("/Client/error.jsp");
         }
 
         
