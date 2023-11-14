@@ -126,7 +126,10 @@
                                         <button type="submit" name="action" value="modificar">Modificar</button>
 					
                                     </form>
-                                    <form action="confirmacionEliminar.jsp" method="get">
+                                    <form action="confirmacionEliminar.jsp" method="post">
+                                        <input type="hidden" name="imageId" value="${image.id}">
+                                        <input type="hidden" name="imageCreator" value="${image.creator}">
+                                        <input type="hidden" name="filename" value="${image.filename}">
                                         <button type="submit">Eliminar</button>
                                     </form>
                                 </div>

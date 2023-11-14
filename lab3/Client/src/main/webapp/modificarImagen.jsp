@@ -42,7 +42,7 @@
         request.setAttribute("oldFilename", oldFilename);
         
         if (session.getAttribute("username") == null) {
-            response.sendRedirect("/lab1/listaImagenes.jsp");
+            response.sendRedirect("/Client/listaImagenes.jsp");
         }
         %>
             <h1>Modificar Imagen</h1>

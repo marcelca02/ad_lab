@@ -41,8 +41,16 @@ public class eliminarImagen extends HttpServlet {
 		throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		
-		String filename = request.getParameter("filename");
-		String id = request.getParameter("imageId");
+                String imageId = request.getParameter("imageId");
+                String imageCreator = request.getParameter("imageCreator");
+                String filename = request.getParameter("filename");
+
+                //System.out.println("Servlet ID: " +imageId);
+                //System.out.println("Servlet Creator: " +imageCreator);
+                //System.out.println("Servlet oldfilename: " +filename);
+
+                int id = Integer.parseInt(imageId);
+		
 		
 		URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/delete");
 		// Conectar URL

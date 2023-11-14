@@ -14,10 +14,27 @@
     <body>
         <h1>¿Estás seguro de que quieres eliminar la imagen?</h1>
 	<div>
-	    <form action="eliminarImagen" method="get">
-		<input type="hidden" name="imageId" value="${image.id}">
-		<input type="hidden" name="imageCreator" value="${image.creator}">
-		<input type="hidden" name="filename" value="${image.filename}">
+            
+            <%session.getAttribute("username"); %>
+            <% 
+            int imageId = Integer.parseInt(request.getParameter("imageId"));
+            request.setAttribute("imageId", imageId);
+
+            String imageCreator = request.getParameter("imageCreator");
+            request.setAttribute("imageCreator", imageCreator);
+
+            String filename = request.getParameter("filename");
+            request.setAttribute("filename", filename);
+
+            if (session.getAttribute("username") == null) {
+                response.sendRedirect("/Client/listaImagenes.jsp");
+            }
+            %>
+            
+	    <form action="eliminarImagen" method="post">
+		<input type="hidden" name="imageId" value="${imageId}">
+		<input type="hidden" name="imageCreator" value="${imageCreator}">
+		<input type="hidden" name="filename" value="${filename}">
 		<button type="submit">Sí</button>
 	    </form>
 	    <form action="listaImagenes.jsp" method="get">
