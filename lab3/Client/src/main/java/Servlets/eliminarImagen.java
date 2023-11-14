@@ -9,6 +9,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -17,6 +19,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.constants;
 
 /**
  *
@@ -38,6 +41,7 @@ public class eliminarImagen extends HttpServlet {
 		throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		
+		String filename = request.getParameter("filename");
 		String id = request.getParameter("imageId");
 		
 		URL url = new URL("http://localhost:8080/RestAD/delete");
@@ -68,15 +72,19 @@ public class eliminarImagen extends HttpServlet {
 
 		    output.write(data.getBytes("UTF-8"));
 		    output.close();
+		    
 		    // Recibe la respuesta del servidor
 		    int responsecode = connection.getResponseCode();
 		    if (responsecode == HttpURLConnection.HTTP_OK){
-			    response.sendRedirect("./eliminarImagen.jsp");
+			File imagen = new File(constants.IMAGESDIR+filename);
+			FileInputStream readImage = new FileInputStream(imagen);
+			readImage.close();
+			imagen.delete();
+			response.sendRedirect("./eliminarImagen.jsp");
 		    } else {
 			    response.sendRedirect("./error.jsp");
 		    }
 		} catch (Exception e) {
-		    e.printStackTrace();
 		    response.getWriter().write("Error:"+ e.getMessage());
 		}
 		}
