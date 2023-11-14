@@ -7,10 +7,12 @@ package Servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -23,6 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Max Pasten
  */
+@MultipartConfig
 @WebServlet(name = "registroImagen", urlPatterns = {"/registroImagen"})
 public class registroImagen extends HttpServlet {
 
@@ -35,9 +38,14 @@ public class registroImagen extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private static final long serialVersionUID = 1L;
+       
+    public registroImagen() {
+        super();
+    }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        
         // Get registro_imagen form parameters
         String title = request.getParameter("title");
         String description = request.getParameter("description");
@@ -46,9 +54,14 @@ public class registroImagen extends HttpServlet {
         String creator = request.getParameter("creator");
         String capture_date = request.getParameter("capture_date");
         String storage_date = request.getParameter("storage_date");
-        String filename = request.getParameter("filename");
+        Part file=request.getPart("filename");
+        // Nombre de Archivo
+        String filename=file.getSubmittedFileName();
         
-        URL url = new URL("http://localhost:8080/RestAD/register");
+        
+        response.setContentType("text/html;charset=UTF-8");
+        
+        URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/register");
         // Conectar URL
         try {
             URLConnection myURLConnection = url.openConnection();
@@ -65,36 +78,44 @@ public class registroImagen extends HttpServlet {
         
         //Abrir una conexión HTTP
         HttpURLConnection connection =(HttpURLConnection)url.openConnection();
-        // Configurar el método de la petición a
+        // Configurar el método de la petición 
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
         // Escribir los parámetros
         try (OutputStream output = connection.getOutputStream()){
-            // Construye la cadena de datos a env
+            // Construye la cadena de datos 
             String data = "title=" + title +
                             "&description=" +description +
                             "&keywords=" +keywords +
                             "&author=" +author +
                             "&creator=" + creator+
-                            "&capture _date=" + capture_date +
-                            "&storage_date=" + storage_date +
+                            "&capture=" + capture_date +
                             "&filename=" + filename;
             
             output.write(data.getBytes("UTF-8"));
             output.close();
+            
+            System.out.println("ENVIADO REGISTRO");
             // Recibe la respuesta del servidor
             int responsecode = connection.getResponseCode();
             if (responsecode == HttpURLConnection.HTTP_OK){
                 // La conexión fue exitosa
-                // Puedes hacer algo con la respuesta si es necesari
-                response.getWriter( ).write("Datos enviados correctamente al servidor.");
+                //response.getWriter( ).write("Datos enviados correctamente al servidor.");
+                
+                
+                
+                
+                // Redirect
+                response.sendRedirect("/Client/menu.jsp");
             } else {
-                response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
+                //response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
+                response.sendRedirect("/Client/error.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("Error:"+ e.getMessage());
+            //response.getWriter().write("Error:"+ e.getMessage());
+            response.sendRedirect("/Client/error.jsp");
         }
     }
 

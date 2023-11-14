@@ -2,6 +2,7 @@ package com.mycompany.restad.resources;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
@@ -16,6 +17,9 @@ import java.sql.SQLException;
 import java.util.List;
 import utils.Image;
 import utils.dbConnection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -87,14 +91,28 @@ public class JakartaEE91Resource {
 	    
 	    int code;
 	    String error;
+            
+            // Obtener Fecha de Ingreso al sistema (Actual)
+            Date todayDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String fechaActual = sdf.format(todayDate);
+            
+            System.out.println("title=" + title);
+            System.out.println("description=" +description);
+            System.out.println("keywords=" +keywords);
+            System.out.println("author=" +author);
+            System.out.println("creator=" + creator);
+            System.out.println("capture=" + capt_date);
+            System.out.println("filename=" + filename);
         
 	    try {
-			db.registerImage(title, description, keywords, author, creator, capt_date, capt_date, filename);
+			db.registerImage(title, description, keywords, author, creator, capt_date, fechaActual, filename);
 			db.closeDb();
 
 			return Response.ok()
 				.build();
 	    } catch (SQLException ex) {
+                    System.out.println("ERROOOOOOOOOOOR: " + ex);
 		    code=502;
 		    error="sqlException";
 	    }	    
@@ -173,6 +191,8 @@ public class JakartaEE91Resource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listImages() {
+        
+        /*
 	    try {
 		    List<Image> list = db.listImages();
 		    JsonArray json = Json.createArrayBuilder(list).build();
@@ -182,6 +202,47 @@ public class JakartaEE91Resource {
 	    } catch (SQLException ex) {
 		    return Response.status(Response.Status.BAD_GATEWAY).build();
 	    }
+        */
+            
+            
+        try {
+            List<Image> list = db.listImages();
+
+            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+            
+            // Convertir lista de image en JSON
+
+            for (Image image : list) {
+                jsonArrayBuilder.add(Json.createObjectBuilder()
+                        .add("id", image.getId())
+                        .add("title", image.getTitle())
+                        .add("description", image.getDescription())
+                        .add("keywords", convertKeywordsToJsonArray(image.getKeywords()))
+                        .add("author", image.getAuthor())
+                        .add("creator", image.getCreator())
+                        .add("captureDate", image.getCaptureDate())
+                        .add("storageDate", image.getStorageDate())
+                        .add("filename", image.getFilename())
+                        .build());
+            }
+
+            JsonArray json = jsonArrayBuilder.build();
+            System.out.println("ENVIA LISTA");
+            return Response.ok().entity(json).build();
+
+        } catch (SQLException ex) {
+            return Response.status(Response.Status.BAD_GATEWAY).build();
+        }
+            
+    }
+    
+    
+    private JsonArray convertKeywordsToJsonArray(String[] keywords) {
+        JsonArrayBuilder keywordsArrayBuilder = Json.createArrayBuilder();
+        for (String keyword : keywords) {
+            keywordsArrayBuilder.add(keyword);
+        }
+        return keywordsArrayBuilder.build();
     }
     
     /**
@@ -283,5 +344,84 @@ public class JakartaEE91Resource {
 	    } catch (SQLException ex) {
 		    return Response.status(Response.Status.BAD_GATEWAY).build();
 	    }
+    }
+    
+    
+    /**
+    * POST method to register a new image – File is not uploaded
+    * @param date_ini
+    * @param date_end
+    * @param keywords
+    * @param author
+    * @return
+    */
+    @Path("searchCombined")
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchCombined (@FormParam("date_ini") String date_ini, 
+            @FormParam("date_fin") String date_end, 
+            @FormParam("keywords") String keywords, 
+            @FormParam("author") String author){
+            
+            System.out.println("title=" + date_ini);
+            System.out.println("description=" +date_end);
+            System.out.println("keywords=" +keywords);
+            System.out.println("author=" +author);
+            
+            
+            List<Image> images = new ArrayList<>();
+            try {
+                
+                if (author.length() == 0 && keywords.length() == 0){
+                    //System.out.println("Date");
+                    //System.out.println("Autor: "+author);
+                    //System.out.println("Keywords: "+keywords);
+                    images = db.searchImageDate(date_ini, date_end);
+                } else if (author.length() != 0 && keywords.length() != 0){
+                    //System.out.println("DateAuthorKeywords");
+                    //System.out.println("Autor: "+author);
+                    //System.out.println("Keywords: "+keywords);
+                    images = db.searchImageDateAuthorKeywords(date_ini, date_end, author, keywords);
+                } else if (keywords.length() != 0 && author.length() == 0){
+                    //System.out.println("Datekeyword");
+                    //System.out.println("Autor: "+author);
+                    //System.out.println("Keywords: "+keywords);
+                    images = db.searchImageDateKeywords(date_ini, date_end, keywords);
+                } else if (keywords.length() == 0&& author.length() != 0){
+                    //System.out.println("DateAutor");
+                    //System.out.println("Autor: "+author);
+                    //System.out.println("Keywords: "+keywords);
+                    images = db.searchImageDateAuthor(date_ini, date_end, author);
+                }
+                
+
+                JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+
+                for (Image image : images) {
+                    jsonArrayBuilder.add(Json.createObjectBuilder()
+                            .add("id", image.getId())
+                            .add("title", image.getTitle())
+                            .add("description", image.getDescription())
+                            .add("keywords", convertKeywordsToJsonArray(image.getKeywords()))
+                            .add("author", image.getAuthor())
+                            .add("creator", image.getCreator())
+                            .add("captureDate", image.getCaptureDate())
+                            .add("storageDate", image.getStorageDate())
+                            .add("filename", image.getFilename())
+                            .build());
+                }
+
+                JsonArray json = jsonArrayBuilder.build();
+                System.out.println("ENVIA BUSQUEDA");
+                return Response.ok().entity(json).build();
+
+            } catch (SQLException ex) {
+                return Response.status(Response.Status.BAD_GATEWAY).build();
+            }
+            
+            
+            
+            
     }
 }

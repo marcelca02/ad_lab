@@ -7,7 +7,6 @@
 <%@ page import="utils.Image" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="utils.dbConnection" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -48,26 +47,19 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
-                    <li><a href="/lab1/listaImagenes.jsp">Listar Imagenes</a></li>
-                    <li><a href="/lab1/buscaImagen.jsp">Buscar Imagen</a></li>
-                    <li><a href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
+                    <li><a href="/Client/registro_imagen.jsp">Registrar Imagen</a></li>
+                    <li><a href="/Client/listaImagenes.jsp">Listar Imagenes</a></li>
+                    <li><a href="/Client/buscaImagen.jsp">Buscar Imagen</a></li>
+                    <li><a href="/Client/cerrarSesion">Cerrar Sesion</a></li>
                 </ul>
             </div>
             <div class="main-content">
                 <h2>Recientes</h2>
                 <div align="center">
-
+                    
                     <%
-
-
-                        dbConnection db = new dbConnection();
-                        List<Image> images = db.recentImage();
-                        db.closeDb();
-                        request.setAttribute("images", images);
-                        //request.getRequestDispatcher("tuPagina.jsp").forward(request, response);
-
-
+                        request.getRequestDispatcher("/listaImagen").include(request, response);
+                        List<Image> images = (List<Image>)request.getAttribute("images");
                     %>
 
                     <table border="1">
