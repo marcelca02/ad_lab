@@ -236,15 +236,6 @@ public class JakartaEE91Resource {
             
     }
     
-    
-    private JsonArray convertKeywordsToJsonArray(String[] keywords) {
-        JsonArrayBuilder keywordsArrayBuilder = Json.createArrayBuilder();
-        for (String keyword : keywords) {
-            keywordsArrayBuilder.add(keyword);
-        }
-        return keywordsArrayBuilder.build();
-    }
-    
     /**
     * GET method to search images by id
     * @param id
@@ -424,4 +415,54 @@ public class JakartaEE91Resource {
             
             
     }
+    
+    /**
+    * GET method to list images
+    * @return
+    */
+    @Path("imageRecent")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response imageRecent() {
+        
+        try {
+            List<Image> list = db.recentImage();
+
+            JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+            
+            // Convertir lista de image en JSON
+
+            for (Image image : list) {
+                jsonArrayBuilder.add(Json.createObjectBuilder()
+                        .add("id", image.getId())
+                        .add("title", image.getTitle())
+                        .add("description", image.getDescription())
+                        .add("keywords", convertKeywordsToJsonArray(image.getKeywords()))
+                        .add("author", image.getAuthor())
+                        .add("creator", image.getCreator())
+                        .add("captureDate", image.getCaptureDate())
+                        .add("storageDate", image.getStorageDate())
+                        .add("filename", image.getFilename())
+                        .build());
+            }
+
+            JsonArray json = jsonArrayBuilder.build();
+            System.out.println("ENVIA LISTA");
+            return Response.ok().entity(json).build();
+
+        } catch (SQLException ex) {
+            return Response.status(Response.Status.BAD_GATEWAY).build();
+        }
+            
+    }
+    
+    // Metodo para convertur la lista de keywords a array JSON
+    private JsonArray convertKeywordsToJsonArray(String[] keywords) {
+        JsonArrayBuilder keywordsArrayBuilder = Json.createArrayBuilder();
+        for (String keyword : keywords) {
+            keywordsArrayBuilder.add(keyword);
+        }
+        return keywordsArrayBuilder.build();
+    }
+    
 }
