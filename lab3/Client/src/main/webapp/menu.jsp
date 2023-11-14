@@ -58,7 +58,7 @@
                 <div align="center">
                     
                     <%
-                        request.getRequestDispatcher("/listaImagen").include(request, response);
+                        request.getRequestDispatcher("/imagenesRecientes").include(request, response);
                         List<Image> images = (List<Image>)request.getAttribute("images");
                     %>
 

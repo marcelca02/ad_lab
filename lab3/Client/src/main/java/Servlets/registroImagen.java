@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -20,6 +22,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.constants;
 
 /**
  *
@@ -103,7 +106,15 @@ public class registroImagen extends HttpServlet {
                 // La conexión fue exitosa
                 //response.getWriter( ).write("Datos enviados correctamente al servidor.");
                 
-                
+                //String uploadPath="C:\\Users\\Max Pasten\\lab1\\images\\"+imageFileName;
+                String uploadPath=constants.IMAGESDIR+filename;
+                FileOutputStream fos=new FileOutputStream(uploadPath);
+                InputStream is=file.getInputStream();
+
+                byte[] dataImg=new byte[is.available()];
+                is.read(dataImg);
+                fos.write(dataImg);
+                fos.close();
                 
                 
                 // Redirect

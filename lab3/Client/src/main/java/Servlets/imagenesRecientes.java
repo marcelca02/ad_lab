@@ -4,35 +4,31 @@
  */
 package Servlets;
 
-import jakarta.servlet.ServletException;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.json.Json;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-
-
-
 import utils.Image;
+
 /**
  *
  * @author Max Pasten
  */
-@WebServlet(name = "listaImagen", urlPatterns = {"/listaImagen"})
-public class listaImagen extends HttpServlet {
+@WebServlet(name = "imagenesRecientes", urlPatterns = {"/imagenesRecientes"})
+public class imagenesRecientes extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,7 +43,7 @@ public class listaImagen extends HttpServlet {
             throws ServletException, IOException {
         try {
             // URL del servicio
-            URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/list");
+            URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/imageRecent");
             // Abrir la conexión HTTP
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
