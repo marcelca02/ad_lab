@@ -145,24 +145,24 @@ public class JakartaEE91Resource {
     @FormParam("capture") String capt_date,
     @FormParam("filename") String filename)
     {    
-	    String error;
-	    int code;
-	    
-	    try {
-		    //if (!db.isOwner(id, creator)) {
-		    //    code=403;
-		    //    error="invalidOwner";
-		    //}
-		    //else {
-			    db.modifyImage(Integer.parseInt(id), title, description, keywords, author, capt_date, filename);
-			    return Response.ok().build();
-		    //}
-	    } catch (ClassNotFoundException | SQLException ex) {
-		    error="";
-		    code=502;
-	    }
-	    JsonObject json = Json.createObjectBuilder().add("error",error).build();
-            return Response.status(code).entity(json).build();
+        String error;
+        int code;
+        
+        try {
+            //if (!db.isOwner(id, creator)) {
+            //    code=403;
+            //    error="invalidOwner";
+            //}
+            //else {
+            db.modifyImage(Integer.parseInt(id), title, description, keywords, author, capt_date, filename);
+            return Response.ok().build();
+            //}
+        } catch (ClassNotFoundException | SQLException ex) {
+                error="Error sentencia sql";
+                code=502;
+        }
+        JsonObject json = Json.createObjectBuilder().add("error",error).build();
+        return Response.status(code).entity(json).build();
     }
     
     /**

@@ -14,7 +14,7 @@
     </head>
     <body>
         <div class="navbar">
-        <%= session.getAttribute("username") %>
+        <% session.getAttribute("username"); %>
                 
         <% 
         int imageId = Integer.parseInt(request.getParameter("imageId"));
@@ -50,10 +50,10 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a href="/lab1/registro_imagen.jsp">Registrar Imagen</a></li>
-                    <li><a href="/lab1/listaImagenes.jsp">Listar Imagenes</a></li>
-                    <li><a href="/lab1/buscaImagen.jsp">Buscar Imagen</a></li>
-                    <li><a href="/lab1/cerrarSesion">Cerrar Sesion</a></li>
+                    <li><a href="/Client/registro_imagen.jsp">Registrar Imagen</a></li>
+                    <li><a href="/Client/listaImagenes.jsp">Listar Imagenes</a></li>
+                    <li><a href="/Client/buscaImagen.jsp">Buscar Imagen</a></li>
+                    <li><a href="/Client/cerrarSesion">Cerrar Sesion</a></li>
                 </ul>
             </div>
             <div class="main-content">

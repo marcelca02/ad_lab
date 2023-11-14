@@ -44,66 +44,74 @@ public class modificarImagen extends HttpServlet {
 		String imageId = request.getParameter("imageId");
 		
 		if (imageId != null) {
-			// Get registro_imagen form parameters
-			String title = request.getParameter("title");
-			String description = request.getParameter("description");
-			String keywords = request.getParameter("keywords");
-			String author = request.getParameter("author");
-			String creator = request.getParameter("creator");
-			String capture_date = request.getParameter("capture_date");
-			String storage_date = request.getParameter("storage_date");
-			String filename = request.getParameter("filename");
+                    
+                    String title = request.getParameter("title");
+                    String description = request.getParameter("description");
+                    String keywords = request.getParameter("key");
+                    String author = request.getParameter("author");
+                    String creator = request.getParameter("imageCreator");
+                    String capture_date = request.getParameter("date");
+                    String filename = request.getParameter("filename");
 
-			URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/modify");
-			// Conectar URL
-			try {
-			    URLConnection myURLConnection = url.openConnection();
-			    myURLConnection.connect();
-			}
-			catch (MalformedURLException e) {
-			    // Fallo de URL
-			    Logger.getAnonymousLogger().log(Level.SEVERE,"URL error", e);
-			} 
-			catch (IOException e){
-			    // fallo de la conexion
-			    Logger.getAnonymousLogger( ).log(Level.SEVERE, "I0 error",e);
-			}
+                    //System.out.println("Title: "+ title);
+                    //System.out.println("description: "+ description);
+                    //System.out.println("keywords: "+ keywords);
+                    //System.out.println("author: "+ author);
+                    //System.out.println("creator: "+ creator);
+                    //System.out.println("capture_date: "+ capture_date);
+                    //System.out.println("filename: "+ filename);
 
-			//Abrir una conexión HTTP
-			HttpURLConnection connection =(HttpURLConnection)url.openConnection();
-			// Configurar el método de la petición a
-			connection.setDoOutput(true);
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-			// Escribir los parámetros
-			try (OutputStream output = connection.getOutputStream()){
-			    // Construye la cadena de datos a env
-			    String data = "title=" + title +
-					    "&description=" +description +
-					    "&keywords=" +keywords +
-					    "&author=" +author +
-					    "&creator=" + creator+
-					    "&capture _date=" + capture_date +
-					    "&storage_date=" + storage_date +
-					    "&filename=" + filename;
 
-			    output.write(data.getBytes("UTF-8"));
-			    output.close();
-			    // Recibe la respuesta del servidor
-			    int responsecode = connection.getResponseCode();
-			    if (responsecode == HttpURLConnection.HTTP_OK){
-				    File oldfile = new File(constants.IMAGESDIR+oldFilename);
-				    File newfile = new File(constants.IMAGESDIR+filename);
-				    oldfile.renameTo(newfile);
+                    URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/modify");
+                    // Conectar URL
+                    try {
+                        URLConnection myURLConnection = url.openConnection();
+                        myURLConnection.connect();
+                    }
+                    catch (MalformedURLException e) {
+                        // Fallo de URL
+                        Logger.getAnonymousLogger().log(Level.SEVERE,"URL error", e);
+                    } 
+                    catch (IOException e){
+                        // fallo de la conexion
+                        Logger.getAnonymousLogger( ).log(Level.SEVERE, "I0 error",e);
+                    }
 
-				    response.sendRedirect("./menu.jsp");
-			    } else {
-				    response.sendRedirect("./error.jsp");
-			    }
-			} catch (Exception e) {
-			    e.printStackTrace();
-			    response.getWriter().write("Error:"+ e.getMessage());
-			}
+                    //Abrir una conexión HTTP
+                    HttpURLConnection connection =(HttpURLConnection)url.openConnection();
+                    // Configurar el método de la petición a
+                    connection.setDoOutput(true);
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+                    // Escribir los parámetros
+                    try (OutputStream output = connection.getOutputStream()){
+                        // Construye la cadena de datos a env
+                        String data = "id=" + imageId +
+                                        "&title=" + title +
+                                        "&description=" +description +
+                                        "&keywords=" +keywords +
+                                        "&author=" +author +
+                                        "&creator=" + creator+
+                                        "&capture=" + capture_date +
+                                        "&filename=" + filename;
+
+                        output.write(data.getBytes("UTF-8"));
+                        output.close();
+                        // Recibe la respuesta del servidor
+                        int responsecode = connection.getResponseCode();
+                        if (responsecode == HttpURLConnection.HTTP_OK){
+                                File oldfile = new File(constants.IMAGESDIR+oldFilename);
+                                File newfile = new File(constants.IMAGESDIR+filename);
+                                oldfile.renameTo(newfile);
+
+                                response.sendRedirect("./menu.jsp");
+                        } else {
+                                response.sendRedirect("./error.jsp");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.getWriter().write("Error:"+ e.getMessage());
+                    }
 		}
 		else response.sendRedirect("./error.jsp");
 		
