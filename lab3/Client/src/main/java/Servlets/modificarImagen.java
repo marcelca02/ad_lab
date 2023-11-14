@@ -54,7 +54,7 @@ public class modificarImagen extends HttpServlet {
 			String storage_date = request.getParameter("storage_date");
 			String filename = request.getParameter("filename");
 
-			URL url = new URL("http://localhost:8080/RestAD/modify");
+			URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/modify");
 			// Conectar URL
 			try {
 			    URLConnection myURLConnection = url.openConnection();

@@ -44,7 +44,7 @@ public class eliminarImagen extends HttpServlet {
 		String filename = request.getParameter("filename");
 		String id = request.getParameter("imageId");
 		
-		URL url = new URL("http://localhost:8080/RestAD/delete");
+		URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/delete");
 		// Conectar URL
 		try {
 		    URLConnection myURLConnection = url.openConnection();
@@ -82,7 +82,7 @@ public class eliminarImagen extends HttpServlet {
 			imagen.delete();
 			response.sendRedirect("./eliminarImagen.jsp");
 		    } else {
-			    response.sendRedirect("./error.jsp");
+			response.sendRedirect("./error.jsp");
 		    }
 		} catch (Exception e) {
 		    response.getWriter().write("Error:"+ e.getMessage());

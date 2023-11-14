@@ -176,7 +176,8 @@ public class JakartaEE91Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteImage (@FormParam("id") String id) {
 	    try {
-		db.deleteImage(Integer.parseInt(id));
+		int id_n = Integer.parseInt(id);
+		db.deleteImage(id_n);
 		return Response.ok().build();
 	    } catch (SQLException ex) {
 		return Response.status(Response.Status.BAD_GATEWAY).build();
