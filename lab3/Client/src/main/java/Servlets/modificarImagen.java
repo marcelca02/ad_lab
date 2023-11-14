@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -17,6 +18,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.constants;
 
 /**
  *
@@ -38,7 +40,9 @@ public class modificarImagen extends HttpServlet {
 		throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		
+		String oldFilename = request.getParameter("oldFilename");
 		String imageId = request.getParameter("imageId");
+		
 		if (imageId != null) {
 			// Get registro_imagen form parameters
 			String title = request.getParameter("title");
@@ -88,6 +92,10 @@ public class modificarImagen extends HttpServlet {
 			    // Recibe la respuesta del servidor
 			    int responsecode = connection.getResponseCode();
 			    if (responsecode == HttpURLConnection.HTTP_OK){
+				    File oldfile = new File(constants.IMAGESDIR+oldFilename);
+				    File newfile = new File(constants.IMAGESDIR+filename);
+				    oldfile.renameTo(newfile);
+
 				    response.sendRedirect("./menu.jsp");
 			    } else {
 				    response.sendRedirect("./error.jsp");
