@@ -10,36 +10,49 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <link rel="stylesheet" type="text/css" href="css/general.css"/>
     </head>
     <body>
-        <h1>¿Estás seguro de que quieres eliminar la imagen?</h1>
-	<div>
-            
-            <%session.getAttribute("username"); %>
-            <% 
-            int imageId = Integer.parseInt(request.getParameter("imageId"));
-            request.setAttribute("imageId", imageId);
+	<div class="navbar">
+            <h1>Eliminar Imagen</h1>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <ul class="menu">
+                    <li><a href="/Client/cerrarSesion">Cerrar Sesion</a></li>
+                </ul>
+            </div>
+            <div class="main-content">
+		<h1>¿Estás seguro de que quieres eliminar la imagen?</h1>
+		<div>
 
-            String imageCreator = request.getParameter("imageCreator");
-            request.setAttribute("imageCreator", imageCreator);
+		    <%session.getAttribute("username"); %>
+		    <% 
+		    int imageId = Integer.parseInt(request.getParameter("imageId"));
+		    request.setAttribute("imageId", imageId);
 
-            String filename = request.getParameter("filename");
-            request.setAttribute("filename", filename);
+		    String imageCreator = request.getParameter("imageCreator");
+		    request.setAttribute("imageCreator", imageCreator);
 
-            if (session.getAttribute("username") == null) {
-                response.sendRedirect("/Client/listaImagenes.jsp");
-            }
-            %>
-            
-	    <form action="eliminarImagen" method="post">
-		<input type="hidden" name="imageId" value="${imageId}">
-		<input type="hidden" name="imageCreator" value="${imageCreator}">
-		<input type="hidden" name="filename" value="${filename}">
-		<button type="submit">Sí</button>
-	    </form>
-	    <form action="listaImagenes.jsp" method="get">
-		<button type="submit">No</button>
-	    </form>
+		    String filename = request.getParameter("filename");
+		    request.setAttribute("filename", filename);
+
+		    if (session.getAttribute("username") == null) {
+			response.sendRedirect("/Client/listaImagenes.jsp");
+		    }
+		    %>
+
+		    <form action="eliminarImagen" method="post">
+			<input type="hidden" name="imageId" value="${imageId}">
+			<input type="hidden" name="imageCreator" value="${imageCreator}">
+			<input type="hidden" name="filename" value="${filename}">
+			<button type="submit">Sí</button>
+		    </form>
+		    <form action="listaImagenes.jsp" method="get">
+			<button type="submit">No</button>
+		    </form>
+		</div>
+	    </div>
 	</div>
     </body>
 </html>
