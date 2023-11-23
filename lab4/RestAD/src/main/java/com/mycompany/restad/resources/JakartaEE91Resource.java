@@ -31,6 +31,7 @@ import java.util.Date;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import utils.constants;
 
 /**
  *
@@ -40,7 +41,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 public class JakartaEE91Resource {
 	
     private final dbConnection db;
-    final public static String uploadDir = "C:/Users/Max Pasten/lab1/upload/";
+    final public static String uploadDir = constants.IMAGESDIR;
     
     public JakartaEE91Resource() throws ClassNotFoundException, SQLException {
         db = new dbConnection();
@@ -96,7 +97,7 @@ public class JakartaEE91Resource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA) 
     @Produces(MediaType.APPLICATION_JSON) 
-    public Response registerImage (@FormDataParam("title") String title, 
+    public Response registerImageT (@FormDataParam("title") String title, 
             @FormDataParam("description") String description, 
             @FormDataParam("keywords") String keywords, 
             @FormDataParam("author") String author, 
@@ -187,15 +188,17 @@ public class JakartaEE91Resource {
     */
     @Path("register")
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.MULTIPART_FORM_DATA)
-    public Response registerImage (@FormParam("title") String title, 
-            @FormParam("description") String description, 
-            @FormParam("keywords") String keywords, 
-            @FormParam("author") String author, 
-            @FormParam("creator") String creator, 
-            @FormParam("capture") String capt_date, 
-            @FormParam("filename") String filename){
+    @Consumes(MediaType.MULTIPART_FORM_DATA) 
+    @Produces(MediaType.APPLICATION_JSON) 
+    public Response registerImage (@FormDataParam("title") String title, 
+            @FormDataParam("description") String description, 
+            @FormDataParam("keywords") String keywords, 
+            @FormDataParam("author") String author, 
+            @FormDataParam("creator") String creator, 
+            @FormDataParam("capture") String capt_date,
+            @FormDataParam("filename") String filename,
+            @FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileMetaData) {
 	    
 	    int code;
 	    String error;
@@ -220,16 +223,21 @@ public class JakartaEE91Resource {
             
         
 	    try {
-			db.registerImage(title, description, keywords, author, creator, capt_date, fechaActual, filename);
-			db.closeDb();
-                        
-                        
-                        
+                if( ! writeImage(filename, fileInputStream) ){ //no se ha podido guardar la imagen
+                    System.out.println("No se guardo la imagen");
+                    code = 500; //fallada server
+                    error = "general";
 
-			return Response.ok()
-				.build();
+                } else { //SUCCESS
+                    db.registerImage(title, description, keywords, author, creator, capt_date, fechaActual, filename);
+                    db.closeDb();
+                    return Response.ok()
+                    .build();
+                }
+                
+		
 	    } catch (SQLException ex) {
-                    System.out.println("ERROOOOOOOOOOOR: " + ex);
+                    System.out.println("ERROR: " + ex);
 		    code=502;
 		    error="sqlException";
 	    }	    
