@@ -20,6 +20,16 @@ import utils.dbConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import utils.constants;
 
 /**
  *
@@ -75,6 +85,7 @@ public class JakartaEE91Resource {
     * @param creator
     * @param capt_date
     * @param filename
+	 * @param file
     * @return
     */
     @Path("register")
@@ -87,7 +98,9 @@ public class JakartaEE91Resource {
             @FormParam("author") String author, 
             @FormParam("creator") String creator, 
             @FormParam("capture") String capt_date, 
-            @FormParam("filename") String filename){
+            @FormParam("filename") String filename,
+	    @FormParam("file") Part file){
+	    
 	    
 	    int code;
 	    String error;
@@ -96,26 +109,33 @@ public class JakartaEE91Resource {
             Date todayDate = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String fechaActual = sdf.format(todayDate);
-            
-            System.out.println("title=" + title);
-            System.out.println("description=" +description);
-            System.out.println("keywords=" +keywords);
-            System.out.println("author=" +author);
-            System.out.println("creator=" + creator);
-            System.out.println("capture=" + capt_date);
-            System.out.println("filename=" + filename);
+     
+	    String fileN = file.getSubmittedFileName();
         
 	    try {
-			db.registerImage(title, description, keywords, author, creator, capt_date, fechaActual, filename);
-			db.closeDb();
+		db.registerImage(title, description, keywords, author, creator, capt_date, fechaActual, filename);
+		db.closeDb();
 
-			return Response.ok()
-				.build();
+		String uploadPath=constants.IMAGESDIR+fileN;
+		FileOutputStream fos=new FileOutputStream(uploadPath);
+		InputStream is=file.getInputStream();
+
+		byte[] dataImg=new byte[is.available()];
+		is.read(dataImg);
+		fos.write(dataImg);
+		fos.close();
+
+		return Response.ok()
+			.build();
 	    } catch (SQLException ex) {
                     System.out.println("ERROOOOOOOOOOOR: " + ex);
 		    code=502;
 		    error="sqlException";
-	    }	    
+	    } catch ( IOException ex) {
+		    System.out.println("ERROOOOOOOOOOOR: " + ex);
+		    code=502;
+		    error="ioException";
+	    }
             JsonObject json = Json.createObjectBuilder().add("error",error).build();
             return Response.status(code).entity(json).build();
     }
@@ -130,6 +150,7 @@ public class JakartaEE91Resource {
     * @param creator, used for checking image ownership
     * @param capt_date
 	 * @param filename
+	 * @param oldFilename
     * @return
     return*/
     @Path("modify")
@@ -149,18 +170,21 @@ public class JakartaEE91Resource {
         int code;
         
         try {
-            //if (!db.isOwner(id, creator)) {
-            //    code=403;
-            //    error="invalidOwner";
-            //}
-            //else {
-            db.modifyImage(Integer.parseInt(id), title, description, keywords, author, capt_date, filename);
-            return Response.ok().build();
-            //}
-        } catch (ClassNotFoundException | SQLException ex) {
-                error="Error sentencia sql";
+		String oldFilename = db.getFilename(Integer.parseInt(id));
+		db.modifyImage(Integer.parseInt(id), title, description, keywords, author, capt_date, filename);
+		// Renombrar archivo
+		File oldfile = new File(constants.IMAGESDIR+oldFilename);
+		File newfile = new File(constants.IMAGESDIR+filename);
+		oldfile.renameTo(newfile);
+		
+		 return Response.ok().build();
+        } catch (ClassNotFoundException ex) {
+                error="ClassNotFound";
                 code=502;
-        }
+        } catch (SQLException ex) {
+		error="SqlException";
+		code=502;
+	}
         JsonObject json = Json.createObjectBuilder().add("error",error).build();
         return Response.status(code).entity(json).build();
     }
@@ -177,9 +201,18 @@ public class JakartaEE91Resource {
     public Response deleteImage (@FormParam("id") String id) {
 	    try {
 		int id_n = Integer.parseInt(id);
+		String oldFilename = db.getFilename(id_n);
 		db.deleteImage(id_n);
+		File imagen = new File(constants.IMAGESDIR+oldFilename);
+		FileInputStream readImage = new FileInputStream(imagen);
+		readImage.close();
+		imagen.delete();
 		return Response.ok().build();
 	    } catch (SQLException ex) {
+		return Response.status(Response.Status.BAD_GATEWAY).build();
+	    } catch (FileNotFoundException ex) {
+		return Response.status(Response.Status.BAD_GATEWAY).build();
+	    } catch (IOException ex) {
 		return Response.status(Response.Status.BAD_GATEWAY).build();
 	    }
     }

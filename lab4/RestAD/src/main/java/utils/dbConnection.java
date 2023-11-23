@@ -30,6 +30,17 @@ public class dbConnection {
         c.close();
     }
     
+    public String getFilename(int id) throws SQLException {
+	String query = "SELECT * FROM IMAGE WHERE ID = ?";
+	PreparedStatement statement = c.prepareStatement(query);
+        
+	statement.setString(1,Integer.toString(id));
+
+	ResultSet res = statement.executeQuery();
+	if (res.next()) return res.getString("FILENAME");
+        else return null;
+    }
+    
     public void modifyImage(int id, String title, String description, String keywords, String author, String dateCapture, String filename) throws ClassNotFoundException, SQLException {       
 
         // Create query and statement
