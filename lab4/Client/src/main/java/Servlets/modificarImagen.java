@@ -9,6 +9,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,6 +25,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import utils.constants;
 
 /**
@@ -44,45 +54,42 @@ public class modificarImagen extends HttpServlet {
 		String imageId = request.getParameter("imageId");
 		
 		if (imageId != null) {
-                    
-                    String title = request.getParameter("title");
-                    String description = request.getParameter("description");
-                    String keywords = request.getParameter("key");
-                    String author = request.getParameter("author");
-                    String creator = request.getParameter("imageCreator");
-                    String capture_date = request.getParameter("date");
-                    String filename = request.getParameter("filename");
 
-                    //System.out.println("Title: "+ title);
-                    //System.out.println("description: "+ description);
-                    //System.out.println("keywords: "+ keywords);
-                    //System.out.println("author: "+ author);
-                    //System.out.println("creator: "+ creator);
-                    //System.out.println("capture_date: "+ capture_date);
-                    //System.out.println("filename: "+ filename);
+			String title = request.getParameter("title");
+			String description = request.getParameter("description");
+			String keywords = request.getParameter("key");
+			String author = request.getParameter("author");
+			String creator = request.getParameter("imageCreator");
+			String capture_date = request.getParameter("date");
+			String filename = request.getParameter("filename");
+			final Part fileP = request.getPart("image");
+			String file_name = fileP.getSubmittedFileName();
+
+			System.out.println(title + " " + description + " " + author + " " + keywords + " " + cr_date + " " + file_name);
+
+			final Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
+			StreamDataBodyPart filePart = new StreamDataBodyPart("file", fileP.getInputStream());
+			FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+			final FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart
+				.field("title", title, MediaType.TEXT_PLAIN_TYPE)
+				.field("description", description, MediaType.TEXT_PLAIN_TYPE)
+				.field("keywords", keywords, MediaType.TEXT_PLAIN_TYPE)
+				.field("author", author, MediaType.TEXT_PLAIN_TYPE)
+				.field("creator", author, MediaType.TEXT_PLAIN_TYPE)
+				.field("capture", capture_date, MediaType.TEXT_PLAIN_TYPE)
+				.field("filename", file_name, MediaType.TEXT_PLAIN_TYPE)
+				.bodyPart(filePart);
 
 
-                    URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/modify");
-                    // Conectar URL
-                    try {
-                        URLConnection myURLConnection = url.openConnection();
-                        myURLConnection.connect();
-                    }
-                    catch (MalformedURLException e) {
-                        // Fallo de URL
-                        Logger.getAnonymousLogger().log(Level.SEVERE,"URL error", e);
-                    } 
-                    catch (IOException e){
-                        // fallo de la conexion
-                        Logger.getAnonymousLogger( ).log(Level.SEVERE, "I0 error",e);
-                    }
+			final WebTarget target = client.target("http://localhost:8080/RestAD/resources/jakartaee9/registerTest");
+			final Response resp = target.request().post(Entity.entity(multipart, multipart.getMediaType()));
+			int status = resp.getStatus();
 
-                    //Abrir una conexión HTTP
-                    HttpURLConnection connection =(HttpURLConnection)url.openConnection();
-                    // Configurar el método de la petición a
-                    connection.setDoOutput(true);
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+			formDataMultiPart.close();
+			multipart.close();
+        
+			System.out.println("STATUS: " + status);
+
                     // Escribir los parámetros
                     try (OutputStream output = connection.getOutputStream()){
                         // Construye la cadena de datos a env
