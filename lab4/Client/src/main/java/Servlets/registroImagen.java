@@ -13,6 +13,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,6 +28,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import utils.constants;
 
 /**
@@ -64,70 +73,41 @@ public class registroImagen extends HttpServlet {
         
         response.setContentType("text/html;charset=UTF-8");
         
-        URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/register");
-        // Conectar URL
-        try {
-            URLConnection myURLConnection = url.openConnection();
-            myURLConnection.connect();
-        }
-        catch (MalformedURLException e) {
-            // Fallo de URL
-            Logger.getAnonymousLogger().log(Level.SEVERE,"URL error", e);
-        } 
-        catch (IOException e){
-            // fallo de la conexion
-            Logger.getAnonymousLogger( ).log(Level.SEVERE, "I0 error",e);
-        }
+        System.out.println("ENVIADO REGISTRO");
+            
+            System.out.println(title + " " + description + " " + author + " " + keywords + " " + capture_date + " " + filename);
         
-        //Abrir una conexión HTTP
-        HttpURLConnection connection =(HttpURLConnection)url.openConnection();
-        // Configurar el método de la petición 
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-        // Escribir los parámetros
-        try (OutputStream output = connection.getOutputStream()){
-            // Construye la cadena de datos 
-            String data = "title=" + title +
-                            "&description=" +description +
-                            "&keywords=" +keywords +
-                            "&author=" +author +
-                            "&creator=" + creator+
-                            "&capture=" + capture_date +
-                            "&filename=" + filename;
-            
-            output.write(data.getBytes("UTF-8"));
-            output.close();
-            
-            System.out.println("ENVIADO REGISTRO");
-            // Recibe la respuesta del servidor
-            int responsecode = connection.getResponseCode();
-            if (responsecode == HttpURLConnection.HTTP_OK){
-                // La conexión fue exitosa
-                //response.getWriter( ).write("Datos enviados correctamente al servidor.");
-                
-                //String uploadPath="C:\\Users\\Max Pasten\\lab1\\images\\"+imageFileName;
-                String uploadPath=constants.IMAGESDIR+filename;
-                FileOutputStream fos=new FileOutputStream(uploadPath);
-                InputStream is=file.getInputStream();
+            final Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
+            StreamDataBodyPart filePart = new StreamDataBodyPart("file", file.getInputStream());
+            FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+            final FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart
+                    .field("title", title, MediaType.TEXT_PLAIN_TYPE)
+                    .field("description", description, MediaType.TEXT_PLAIN_TYPE)
+                    .field("keywords", keywords, MediaType.TEXT_PLAIN_TYPE)
+                    .field("author", author, MediaType.TEXT_PLAIN_TYPE)
+                    .field("creator", author, MediaType.TEXT_PLAIN_TYPE)
+                    .field("capture", capture_date, MediaType.TEXT_PLAIN_TYPE)
+                    .field("filename", filename, MediaType.TEXT_PLAIN_TYPE)
+                    .bodyPart(filePart);
 
-                byte[] dataImg=new byte[is.available()];
-                is.read(dataImg);
-                fos.write(dataImg);
-                fos.close();
-                
-                
+
+            final WebTarget target = client.target("http://localhost:8080/RestAD/resources/jakartaee9/register");
+            final Response resp = target.request().post(Entity.entity(multipart, multipart.getMediaType()));
+            int responsecode = resp.getStatus();
+
+            formDataMultiPart.close();
+            multipart.close();
+            
+            // Recibe la respuesta del servidor
+            
+            if (responsecode == HttpURLConnection.HTTP_OK){
+                System.out.println("Subido con exito");
                 // Redirect
                 response.sendRedirect("/Client/menu.jsp");
             } else {
                 //response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
                 response.sendRedirect("/Client/error.jsp");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            //response.getWriter().write("Error:"+ e.getMessage());
-            response.sendRedirect("/Client/error.jsp");
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

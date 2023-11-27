@@ -4,9 +4,6 @@ import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
-//import jakarta.mail.MessagingException;
-//import jakarta.mail.Part;
-import jakarta.servlet.http.Part;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
@@ -16,9 +13,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.List;
@@ -31,16 +25,13 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import utils.constants;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import utils.constants;
 
 /**
  *
@@ -50,7 +41,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 public class JakartaEE91Resource {
 	
     private final dbConnection db;
-    final public static String uploadDir = "C:/Users/Max Pasten/lab1/upload/";
+    final public static String uploadDir = constants.IMAGESDIR;
     
     public JakartaEE91Resource() throws ClassNotFoundException, SQLException {
         db = new dbConnection();
@@ -106,7 +97,7 @@ public class JakartaEE91Resource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA) 
     @Produces(MediaType.APPLICATION_JSON) 
-    public Response registerImage (@FormDataParam("title") String title, 
+    public Response registerImageT (@FormDataParam("title") String title, 
             @FormDataParam("description") String description, 
             @FormDataParam("keywords") String keywords, 
             @FormDataParam("author") String author, 
@@ -198,17 +189,17 @@ public class JakartaEE91Resource {
     */
     @Path("register")
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.MULTIPART_FORM_DATA)
-    public Response registerImage (@FormParam("title") String title, 
-            @FormParam("description") String description, 
-            @FormParam("keywords") String keywords, 
-            @FormParam("author") String author, 
-            @FormParam("creator") String creator, 
-            @FormParam("capture") String capt_date, 
-            @FormParam("filename") String filename,
-	    @FormParam("file") Part file){
-	    
+    @Consumes(MediaType.MULTIPART_FORM_DATA) 
+    @Produces(MediaType.APPLICATION_JSON) 
+    public Response registerImage (@FormDataParam("title") String title, 
+            @FormDataParam("description") String description, 
+            @FormDataParam("keywords") String keywords, 
+            @FormDataParam("author") String author, 
+            @FormDataParam("creator") String creator, 
+            @FormDataParam("capture") String capt_date,
+            @FormDataParam("filename") String filename,
+            @FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileMetaData) {
 	    
 	    int code;
 	    String error;
@@ -217,32 +208,23 @@ public class JakartaEE91Resource {
             Date todayDate = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String fechaActual = sdf.format(todayDate);
-     
-	    String fileN = file.getSubmittedFileName();
         
 	    try {
-		db.registerImage(title, description, keywords, author, creator, capt_date, fechaActual, filename);
-		db.closeDb();
+                if( ! writeImage(filename, fileInputStream) ){ //no se ha podido guardar la imagen
+                    System.out.println("No se guardo la imagen");
+                    code = 500; //fallada server
+                    error = "general";
 
-		String uploadPath=constants.IMAGESDIR+fileN;
-		FileOutputStream fos=new FileOutputStream(uploadPath);
-		InputStream is=file.getInputStream();
-
-		byte[] dataImg=new byte[is.available()];
-		is.read(dataImg);
-		fos.write(dataImg);
-		fos.close();
-
-		return Response.ok()
-			.build();
+                } else { //SUCCESS
+                    db.registerImage(title, description, keywords, author, creator, capt_date, fechaActual, filename);
+                    db.closeDb();
+                    return Response.ok()
+                    .build();
+                }
 	    } catch (SQLException ex) {
-                    System.out.println("ERROOOOOOOOOOOR: " + ex);
+                    System.out.println("ERROR: " + ex);
 		    code=502;
 		    error="sqlException";
-	    } catch ( IOException ex) {
-		    System.out.println("ERROOOOOOOOOOOR: " + ex);
-		    code=502;
-		    error="ioException";
 	    }
             JsonObject json = Json.createObjectBuilder().add("error",error).build();
             return Response.status(code).entity(json).build();

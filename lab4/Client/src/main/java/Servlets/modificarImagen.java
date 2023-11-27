@@ -16,20 +16,11 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
-import utils.constants;
-
 /**
  *
  * @author marcel
@@ -65,7 +56,7 @@ public class modificarImagen extends HttpServlet {
 			final Part fileP = request.getPart("image");
 			String file_name = fileP.getSubmittedFileName();
 
-			System.out.println(title + " " + description + " " + author + " " + keywords + " " + cr_date + " " + file_name);
+			System.out.println(title + " " + description + " " + author + " " + keywords + " " + capture_date + " " + file_name);
 
 			final Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
 			StreamDataBodyPart filePart = new StreamDataBodyPart("file", fileP.getInputStream());
@@ -84,41 +75,24 @@ public class modificarImagen extends HttpServlet {
 			final WebTarget target = client.target("http://localhost:8080/RestAD/resources/jakartaee9/registerTest");
 			final Response resp = target.request().post(Entity.entity(multipart, multipart.getMediaType()));
 			int status = resp.getStatus();
+			
 
 			formDataMultiPart.close();
 			multipart.close();
         
 			System.out.println("STATUS: " + status);
 
-                    // Escribir los parámetros
-                    try (OutputStream output = connection.getOutputStream()){
-                        // Construye la cadena de datos a env
-                        String data = "id=" + imageId +
-                                        "&title=" + title +
-                                        "&description=" +description +
-                                        "&keywords=" +keywords +
-                                        "&author=" +author +
-                                        "&creator=" + creator+
-                                        "&capture=" + capture_date +
-                                        "&filename=" + filename;
-
-                        output.write(data.getBytes("UTF-8"));
-                        output.close();
-                        // Recibe la respuesta del servidor
-                        int responsecode = connection.getResponseCode();
-                        if (responsecode == HttpURLConnection.HTTP_OK){
-                                File oldfile = new File(constants.IMAGESDIR+oldFilename);
-                                File newfile = new File(constants.IMAGESDIR+filename);
-                                oldfile.renameTo(newfile);
-
-                                response.sendRedirect("./menu.jsp");
-                        } else {
-                                response.sendRedirect("./error.jsp");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        response.getWriter().write("Error:"+ e.getMessage());
-                    }
+			// Recibe la respuesta del servidor
+            
+			if (status == HttpURLConnection.HTTP_OK){
+			    System.out.println("Subido con exito");
+			    // Redirect
+			    response.sendRedirect("/Client/menu.jsp");
+			} else {
+			    //response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
+			    response.sendRedirect("/Client/error.jsp");
+			}
+			
 		}
 		else response.sendRedirect("./error.jsp");
 		
