@@ -34,7 +34,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @Path("jakartaee9")
 public class JakartaEE91Resource {
     
-    final public static String uploadDir = "/var/webapp/testGlassfish/upload/";
+    final public static String uploadDir = "C:/Users/Max Pasten/lab1/upload/";
     
     @GET
     public Response ping(){
