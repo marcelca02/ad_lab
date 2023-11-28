@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -344,6 +347,8 @@ public class JakartaEE91Resource {
             // Convertir lista de image en JSON
 
             for (Image image : list) {
+		byte[] fileContent = FileUtils.readFileToByteArray(new File(constants.IMAGESDIR+image.getFilename()));
+		String encodedString = Base64.getEncoder().encodeToString(fileContent);
                 jsonArrayBuilder.add(Json.createObjectBuilder()
                         .add("id", image.getId())
                         .add("title", image.getTitle())
@@ -354,14 +359,16 @@ public class JakartaEE91Resource {
                         .add("captureDate", image.getCaptureDate())
                         .add("storageDate", image.getStorageDate())
                         .add("filename", image.getFilename())
+			.add("image", encodedString)
                         .build());
+		
             }
 
             JsonArray json = jsonArrayBuilder.build();
             System.out.println("ENVIA LISTA");
             return Response.ok().entity(json).build();
 
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             return Response.status(Response.Status.BAD_GATEWAY).build();
         }
             
