@@ -1,5 +1,6 @@
 package com.mycompany.restad.resources;
 
+import jakarta.activation.MimetypesFileTypeMap;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import jakarta.servlet.http.Part;
+import jakarta.ws.rs.core.HttpHeaders;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -598,6 +600,22 @@ public class JakartaEE91Resource {
             keywordsArrayBuilder.add(keyword);
         }
         return keywordsArrayBuilder.build();
+    }
+    
+
+    @Path("getImage/{filename]")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getImage(@PathParam("filename") String filename) {
+	    try {
+		    File file = new File(constants.IMAGESDIR+filename);
+		    if (!file.exists()) return Response.status(404).build();
+		    String mime = new MimetypesFileTypeMap().getContentType(file);
+		    return Response.ok(file,mime).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+filename).build();
+	    }
+	    catch (Exception e) {
+		    return Response.ok("Error").build();
+	    }
     }
     
 }
