@@ -76,10 +76,11 @@
                     <br>
                     <label>Fecha Captura:</label>
                     <input type="date" name="date" value="${date}" required></input>
+		    <br>
                     <br>
-                    <br>
-                    <label>Nombre Archivo:</label>
-                    <input name="filename" value="${oldFilename}" required><br><br></input>
+		    <label for="nombre_imagen">Nombre Archivo:</label>
+                    <input type="file" id="imagen" name="file" accept="image/*" onchange="previewImage(event)" required>
+		    
                     
                     <input type="hidden" name="imageId" value="${imageId}">
                     <input type="hidden" name="imageCreator" value="${imageCreator}">

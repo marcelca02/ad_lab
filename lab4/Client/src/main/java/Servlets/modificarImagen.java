@@ -5,6 +5,7 @@
 package Servlets;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +26,23 @@ import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
  *
  * @author marcel
  */
+@MultipartConfig
 @WebServlet(name = "modificarImagen", urlPatterns = {"/modificarImagen"})
 public class modificarImagen extends HttpServlet {
+	/**
+	* Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+	* methods.
+	*
+	* @param request servlet request
+	* @param response servlet response
+	* @throws ServletException if a servlet-specific error occurs
+	* @throws IOException if an I/O error occurs
+	*/
+       private static final long serialVersionUID = 1L;
+
+       public modificarImagen() {
+	   super();
+       }
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and
@@ -45,34 +61,33 @@ public class modificarImagen extends HttpServlet {
 		String imageId = request.getParameter("imageId");
 		
 		if (imageId != null) {
-
+			String id = request.getParameter("imageId");
 			String title = request.getParameter("title");
 			String description = request.getParameter("description");
 			String keywords = request.getParameter("key");
 			String author = request.getParameter("author");
 			String creator = request.getParameter("imageCreator");
 			String capture_date = request.getParameter("date");
-			String filename = request.getParameter("filename");
-			final Part fileP = request.getPart("image");
-			String file_name = fileP.getSubmittedFileName();
-
-			System.out.println(title + " " + description + " " + author + " " + keywords + " " + capture_date + " " + file_name);
+			final Part fileP = request.getPart("file");
+			String filename = fileP.getSubmittedFileName();
 
 			final Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
 			StreamDataBodyPart filePart = new StreamDataBodyPart("file", fileP.getInputStream());
 			FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
 			final FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart
+				.field("id", id, MediaType.TEXT_PLAIN_TYPE)
 				.field("title", title, MediaType.TEXT_PLAIN_TYPE)
 				.field("description", description, MediaType.TEXT_PLAIN_TYPE)
 				.field("keywords", keywords, MediaType.TEXT_PLAIN_TYPE)
 				.field("author", author, MediaType.TEXT_PLAIN_TYPE)
-				.field("creator", author, MediaType.TEXT_PLAIN_TYPE)
+				.field("creator", creator, MediaType.TEXT_PLAIN_TYPE)
 				.field("capture", capture_date, MediaType.TEXT_PLAIN_TYPE)
-				.field("filename", file_name, MediaType.TEXT_PLAIN_TYPE)
+				.field("filename", filename, MediaType.TEXT_PLAIN_TYPE)
 				.bodyPart(filePart);
 
+			
 
-			final WebTarget target = client.target("http://localhost:8080/RestAD/resources/jakartaee9/registerTest");
+			final WebTarget target = client.target("http://localhost:8080/RestAD/resources/jakartaee9/modify");
 			final Response resp = target.request().post(Entity.entity(multipart, multipart.getMediaType()));
 			int status = resp.getStatus();
 			
@@ -85,7 +100,7 @@ public class modificarImagen extends HttpServlet {
 			// Recibe la respuesta del servidor
             
 			if (status == HttpURLConnection.HTTP_OK){
-			    System.out.println("Subido con exito");
+			    System.out.println("Modificado con éxito");
 			    // Redirect
 			    response.sendRedirect("/Client/menu.jsp");
 			} else {

@@ -247,18 +247,18 @@ public class JakartaEE91Resource {
     return*/
     @Path("modify")
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response modifyImage (@FormParam("id") String id,
-    @FormParam("title") String title,
-    @FormParam("description") String description,
-    @FormParam("keywords") String keywords,
-    @FormParam("author") String author,
-    @FormParam("creator") String creator,
-    @FormParam("capture") String capt_date,
-    @FormParam("filename") String filename,
-    @FormDataParam("file") InputStream fileInputStream,
-    @FormDataParam("file") FormDataContentDisposition fileMetaData)
+    @Consumes(MediaType.MULTIPART_FORM_DATA) 
+    @Produces(MediaType.APPLICATION_JSON) 
+    public Response modifyImage (@FormDataParam("id") String id,
+	    @FormDataParam("title") String title, 
+            @FormDataParam("description") String description, 
+            @FormDataParam("keywords") String keywords, 
+            @FormDataParam("author") String author, 
+            @FormDataParam("creator") String creator, 
+            @FormDataParam("capture") String capt_date,
+            @FormDataParam("filename") String filename,
+            @FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileMetaData)
     {    
         String error;
         int code;
@@ -603,7 +603,7 @@ public class JakartaEE91Resource {
     }
     
 
-    @Path("getImage/{filename]")
+    @Path("getImage/{filename}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getImage(@PathParam("filename") String filename) {
