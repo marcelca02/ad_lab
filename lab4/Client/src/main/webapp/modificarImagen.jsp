@@ -76,10 +76,10 @@
                     <br>
                     <label>Fecha Captura:</label>
                     <input type="date" name="date" value="${date}" required></input>
+		    <br>
                     <br>
-                    <br>
-                    <label>Nombre Archivo:</label>
-                    <input name="filename" value="${oldFilename}" required><br><br></input>
+                    <label>Autor:</label>
+                    <input name="filename" value="${oldFilename}" required></input>
                     
                     <input type="hidden" name="imageId" value="${imageId}">
                     <input type="hidden" name="imageCreator" value="${imageCreator}">

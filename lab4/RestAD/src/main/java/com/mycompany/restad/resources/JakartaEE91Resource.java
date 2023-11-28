@@ -258,9 +258,7 @@ public class JakartaEE91Resource {
     @FormParam("author") String author,
     @FormParam("creator") String creator,
     @FormParam("capture") String capt_date,
-    @FormParam("filename") String filename,
-    @FormDataParam("file") InputStream fileInputStream,
-    @FormDataParam("file") FormDataContentDisposition fileMetaData)
+    @FormParam("filename") String filename)
     {    
         String error;
         int code;
@@ -268,21 +266,15 @@ public class JakartaEE91Resource {
         try {
 		
 		String oldFilename = db.getFilename(Integer.parseInt(id));
-		if( ! writeImage(oldFilename, fileInputStream) ){ //no se ha podido guardar la imagen
-                    System.out.println("No se guardo la imagen");
-                    code = 500; //fallada server
-                    error = "general";
-
-                } else { //SUCCESS
-		    db.modifyImage(Integer.parseInt(id), title, description, keywords, author, capt_date, filename);
-		    // Renombrar archivo
-		    File oldfile = new File(constants.IMAGESDIR+oldFilename);
-		    File newfile = new File(constants.IMAGESDIR+filename);
-		    oldfile.renameTo(newfile);                    
-		    db.closeDb();
-                    return Response.ok()
-                    .build();
-                }
+		db.modifyImage(Integer.parseInt(id), title, description, keywords, author, capt_date, filename);
+		// Renombrar archivo
+		File oldfile = new File(constants.IMAGESDIR+oldFilename);
+		File newfile = new File(constants.IMAGESDIR+filename);
+		oldfile.renameTo(newfile);                    
+		db.closeDb();
+		return Response.ok()
+		.build();
+                
         } catch (ClassNotFoundException ex) {
                 error="ClassNotFound";
                 code=502;
