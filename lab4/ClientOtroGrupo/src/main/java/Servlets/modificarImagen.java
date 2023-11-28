@@ -5,11 +5,11 @@
 package Servlets;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -18,58 +18,51 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.constants;
+
 /**
  *
  * @author marcel
  */
-@MultipartConfig
 @WebServlet(name = "modificarImagen", urlPatterns = {"/modificarImagen"})
 public class modificarImagen extends HttpServlet {
-	/**
-	* Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-	* methods.
-	*
-	* @param request servlet request
-	* @param response servlet response
-	* @throws ServletException if a servlet-specific error occurs
-	* @throws IOException if an I/O error occurs
-	*/
-       private static final long serialVersionUID = 1L;
-
-       public modificarImagen() {
-	   super();
-       }
-
 
 	/**
-	 * Handles the HTTP <code>POST</code> method.
+	 * Processes requests for both HTTP <code>GET</code> and
+	 * <code>POST</code> methods.
 	 *
 	 * @param request servlet request
 	 * @param response servlet response
 	 * @throws ServletException if a servlet-specific error occurs
 	 * @throws IOException if an I/O error occurs
 	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
-
 		response.setContentType("text/html;charset=UTF-8");
 		
 		String oldFilename = request.getParameter("oldFilename");
 		String imageId = request.getParameter("imageId");
 		
 		if (imageId != null) {
-			String id = request.getParameter("imageId");
-			String title = request.getParameter("title");
-			String description = request.getParameter("description");
-			String keywords = request.getParameter("key");
-			String author = request.getParameter("author");
-			String creator = request.getParameter("imageCreator");
-			String capture_date = request.getParameter("date");
+                    
+                    String title = request.getParameter("title");
+                    String description = request.getParameter("description");
+                    String keywords = request.getParameter("key");
+                    String author = request.getParameter("author");
+                    String creator = request.getParameter("imageCreator");
+                    String capture_date = request.getParameter("date");
+                    String filename = request.getParameter("filename");
 
-			String filename = request.getParameter("filename");
+                    //System.out.println("Title: "+ title);
+                    //System.out.println("description: "+ description);
+                    //System.out.println("keywords: "+ keywords);
+                    //System.out.println("author: "+ author);
+                    //System.out.println("creator: "+ creator);
+                    //System.out.println("capture_date: "+ capture_date);
+                    //System.out.println("filename: "+ filename);
 
-			URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/modify");
+
+                    URL url = new URL("http://localhost:8080/AD-practica4-REST/resources/jakartaee9/modify");
                     // Conectar URL
                     try {
                         URLConnection myURLConnection = url.openConnection();
@@ -107,7 +100,11 @@ public class modificarImagen extends HttpServlet {
                         // Recibe la respuesta del servidor
                         int responsecode = connection.getResponseCode();
                         if (responsecode == HttpURLConnection.HTTP_OK){
-                                response.sendRedirect("./listaImagenes.jsp");
+                                File oldfile = new File(constants.IMAGESDIR+oldFilename);
+                                File newfile = new File(constants.IMAGESDIR+filename);
+                                oldfile.renameTo(newfile);
+
+                                response.sendRedirect("./menu.jsp");
                         } else {
                                 response.sendRedirect("./error.jsp");
                         }
@@ -117,8 +114,46 @@ public class modificarImagen extends HttpServlet {
                     }
 		}
 		else response.sendRedirect("./error.jsp");
+		
+		}
 
+	// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+	/**
+	 * Handles the HTTP <code>GET</code> method.
+	 *
+	 * @param request servlet request
+	 * @param response servlet response
+	 * @throws ServletException if a servlet-specific error occurs
+	 * @throws IOException if an I/O error occurs
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException {
+		processRequest(request, response);
 	}
 
+	/**
+	 * Handles the HTTP <code>POST</code> method.
+	 *
+	 * @param request servlet request
+	 * @param response servlet response
+	 * @throws ServletException if a servlet-specific error occurs
+	 * @throws IOException if an I/O error occurs
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException {
+		processRequest(request, response);
+	}
+
+	/**
+	 * Returns a short description of the servlet.
+	 *
+	 * @return a String containing servlet description
+	 */
+	@Override
+	public String getServletInfo() {
+		return "Short description";
+	}// </editor-fold>
 
 }

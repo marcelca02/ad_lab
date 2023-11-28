@@ -50,10 +50,10 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a href="/Client/registro_imagen.jsp">Registrar Imagen</a></li>
-                    <li><a href="/Client/listaImagenes.jsp">Listar Imagenes</a></li>
-                    <li><a href="/Client/buscaImagen.jsp">Buscar Imagen</a></li>
-                    <li><a href="/Client/cerrarSesion">Cerrar Sesion</a></li>
+                    <li><a href="/ClientOtroGrupo/registro_imagen.jsp">Registrar Imagen</a></li>
+                    <li><a href="/ClientOtroGrupo/listaImagenes.jsp">Listar Imagenes</a></li>
+                    <li><a href="/ClientOtroGrupo/buscaImagen.jsp">Buscar Imagen</a></li>
+                    <li><a href="/ClientOtroGrupo/cerrarSesion">Cerrar Sesion</a></li>
                 </ul>
             </div>
             <div class="main-content">
@@ -76,16 +76,10 @@
                     <br>
                     <label>Fecha Captura:</label>
                     <input type="date" name="date" value="${date}" required></input>
-		    <br>
                     <br>
-<<<<<<< HEAD
-		    <label for="nombre_imagen">Nombre Archivo:</label>
-                    <input type="file" id="imagen" name="file" accept="image/*" onchange="previewImage(event)" required>
-		    
-=======
-                    <label>Autor:</label>
-                    <input name="filename" value="${oldFilename}" required></input>
->>>>>>> main
+                    <br>
+                    <label>Nombre Archivo:</label>
+                    <input name="filename" value="${oldFilename}" required><br><br></input>
                     
                     <input type="hidden" name="imageId" value="${imageId}">
                     <input type="hidden" name="imageCreator" value="${imageCreator}">
