@@ -58,7 +58,7 @@ public class JakartaEE91Resource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@FormParam("username") String username, @FormParam("password") String password) {
-        
+        System.out.println("ENTRA");
         UsuarisInterface db = new UsuarisInterface();
         db.UsuarisConnect();
         if(db.existeixUsuari(username, password)) {

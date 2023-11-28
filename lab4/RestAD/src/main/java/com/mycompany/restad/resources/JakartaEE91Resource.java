@@ -29,6 +29,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Base64;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -639,6 +641,36 @@ public class JakartaEE91Resource {
             
         } catch (Exception e) {
             return Response.ok("Error").build();
+        }
+    }
+    
+    @Path("imageList")
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getImageList() {
+        try {
+            File imageDirectory = new File(constants.IMAGESDIR);
+
+            if (!imageDirectory.exists() || !imageDirectory.isDirectory()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Directorio de imágenes no encontrado.").build();
+            }
+
+            File[] imageFiles = imageDirectory.listFiles();
+            if (imageFiles == null || imageFiles.length == 0) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron imágenes.").build();
+            }
+
+            List<String> imageNames = new ArrayList<>();
+            for (File imageFile : imageFiles) {
+                if (imageFile.isFile()) {
+                    imageNames.add(imageFile.getName());
+                }
+            }
+
+            return Response.ok(imageNames).build();
+        } catch (Exception e) {
+            return Response.serverError().entity("Error al obtener la lista de imágenes.").build();
         }
     }
     
