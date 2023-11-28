@@ -132,6 +132,12 @@
                                         <input type="hidden" name="filename" value="${image.filename}">
                                         <button type="submit">Eliminar</button>
                                     </form>
+				    <form action="descargarImagen.java" method="get">
+                                        <input type="hidden" name="imageId" value="${image.id}">
+                                        <input type="hidden" name="imageCreator" value="${image.creator}">
+                                        <input type="hidden" name="filename" value="${image.filename}">
+                                        <button type="submit">Eliminar</button>
+                                    </form>
                                 </div>
 
                                 <% 
