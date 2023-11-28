@@ -602,7 +602,7 @@ public class JakartaEE91Resource {
         return keywordsArrayBuilder.build();
     }
     
-
+/*
     @Path("getImage/{filename]")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -616,6 +616,30 @@ public class JakartaEE91Resource {
 	    catch (Exception e) {
 		    return Response.ok("Error").build();
 	    }
+    }
+  */  
+    @Path("getImage/{filename}")
+    @GET
+    @Produces("image/*")
+    public Response getImage(@PathParam("filename") String filename) {
+        try {
+            
+            System.out.println("Entra al get image: " + constants.IMAGESDIR);
+            File f = new File(constants.IMAGESDIR+ filename);
+            System.out.println("Existe: " + f.exists());
+            if (!f.exists()){
+                System.out.println("Ya existe el fichero");
+                return Response.status(404).build();
+                
+            } else {
+                String mt = new MimetypesFileTypeMap().getContentType(f);
+                return Response.ok(f, mt).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+filename).build();
+            }
+            
+            
+        } catch (Exception e) {
+            return Response.ok("Error").build();
+        }
     }
     
 }
