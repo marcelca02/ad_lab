@@ -63,7 +63,9 @@ public class registro_imagen extends HttpServlet {
         System.out.println("Fecha: "+ storage_date);
         System.out.println("Creator:" + creator);
         
-        
+        // Controla el tiempo
+        long startTime = System.currentTimeMillis();
+
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             
@@ -105,6 +107,11 @@ public class registro_imagen extends HttpServlet {
             
             
             db.closeDb();
+            
+            // Finaliza el tiempo
+            long endTime = System.currentTimeMillis();
+            long elapsedTime = endTime - startTime;
+            System.out.println("El tiempo de ejecución de registro fue de: " + elapsedTime + " milisegundos.");
             
             response.sendRedirect("/lab1/menu.jsp");
             /* TODO output your page here. You may use following sample code. */

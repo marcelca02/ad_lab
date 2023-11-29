@@ -4,6 +4,7 @@
  */
 package Servlets;
 
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,17 +17,29 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import com.google.gson.Gson;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
-
-import jakarta.json.Json;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-
-
-
 import utils.Image;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import com.fasterxml.jackson.core.type.TypeReference;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 /**
  *
  * @author Max Pasten
@@ -45,72 +58,124 @@ public class listaImagen extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String jsonString = "";
         try {
-            // URL del servicio
-            URL url = new URL("http://localhost:8080/AD-practica4-REST/resources/jakartaee9/list");
-            // Abrir la conexión HTTP
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            URL url = new URL("http://localhost:8080/RestADSecundario/resources/jakartaee9/list");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-            // Configurar la solicitud
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/json");
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder responseData = new StringBuilder();
+                String inputLine;
 
-            // Verificar el código de estado de la respuesta
-            if (connection.getResponseCode() != 200) {
-                // Redirect
-                response.sendRedirect("/ClientOtroGrupo/menu.jsp");
-                throw new RuntimeException("Error: Código de estado " + connection.getResponseCode());
-            }
+                while ((inputLine = in.readLine()) != null) {
+                    responseData.append(inputLine);
+                }
+                in.close();
 
-            // Leer la respuesta JSON
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            JsonReader jsonReader = Json.createReader(reader);
-            JsonArray jsonArray = jsonReader.readArray();
+                // Obtener la respuesta como un String completo
+                jsonString = responseData.toString();
 
-            // Convertir el JSON a una lista de objetos Image
-            List<Image> imagesList = new ArrayList<>();
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JsonObject jsonImage = jsonArray.getJsonObject(i);
+                // Hacer algo con el String, como imprimirlo en la consola del servidor
+                System.out.println("Datos recibidos: " + jsonString);
 
-                // Crear un objeto Image y agregarlo a la lista
-                Image image = new Image();
-                image.setId(jsonImage.getInt("id"));
-                image.setTitle(jsonImage.getString("title"));
-                image.setDescription(jsonImage.getString("description"));
-                image.setKeywords(getKeywordsArray(jsonImage.getJsonArray("keywords")));
-                image.setAuthor(jsonImage.getString("author"));
-                image.setCreator(jsonImage.getString("creator"));
-                image.setCaptureDate(jsonImage.getString("captureDate"));
-                image.setStorageDate(jsonImage.getString("storageDate"));
-                image.setFilename(jsonImage.getString("filename"));
-
-                // Añadir el objeto Image a la lista
-                imagesList.add(image);
-            }
-
-
-            // Cerrar la conexión
-            connection.disconnect();
             
-            request.setAttribute("images", imagesList);
-//            request.getRequestDispatcher("listaImagenes.jsp").forward(request, response);
+                //request.setAttribute("jsonData", jsonString);
+                //request.getRequestDispatcher("tupagina.jsp").forward(request, response);
+            } else {
+                
+            }
+        
+        
+            System.out.println("Datos recibidos: " + jsonString);
+          
             
+            List<Image> images = convertToImageList(jsonString);
 
+          
+            // Ahora 'images' es una lista de objetos Image
+            for (Image image : images) {
+                // Puedes trabajar con cada objeto Image aquí
+                System.out.println(image.getTitle());
+                System.out.println(image.getId());
+                System.out.println(image.getDescription());
+                System.out.println(image.getKeywords());
+                System.out.println(image.getAuthor());
+                System.out.println(image.getCreator());
+                System.out.println(image.getCaptureDate());
+                System.out.println(image.getStorageDate());
+                System.out.println(image.getFilename());
+            }
+        
+        
+                    
         } catch (Exception e) {
-            // Redirect
-            response.sendRedirect("/ClientOtroGrupo/menu.jsp");
+            
             e.printStackTrace();
+            response.sendRedirect("/error.jsp");
         }
+
     }
     
-    // Método auxiliar para convertir el JsonArray de keywords a un array de strings
-    private static String[] getKeywordsArray(JsonArray keywordsArray) {
-        String[] keywords = new String[keywordsArray.size()];
-        for (int i = 0; i < keywordsArray.size(); i++) {
-            keywords[i] = keywordsArray.getString(i);
+    
+    private static List<Image> convertToImageList(String data) {
+        List<Image> images = new ArrayList<>();
+
+        // Eliminar corchetes exteriores y dividir los objetos individuales
+        String[] objects = data.substring(1, data.length() - 1).split("\\},\\{");
+
+        for (String obj : objects) {
+            // Dividir cada objeto en sus partes clave-valor
+            String[] parts = obj.replaceAll("[{}\"]", "").split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+            Image image = new Image();
+
+            for (String part : parts) {
+                String[] keyValue = part.split(":");
+                String key = keyValue[0].trim();
+                String value = keyValue[1].trim();
+
+                switch (key) {
+                    case "ID":
+                        image.setId(Integer.parseInt(value));
+                        break;
+                    case "TITLE":
+                        image.setTitle(value);
+                        break;
+                    case "DESCRIPTION":
+                        image.setDescription(value);
+                        break;
+                    case "KEYWORDS":
+                        // Procesamiento de las palabras clave
+                        String[] keywordsArray = value.split(", ");
+                        image.setKeywords(keywordsArray);
+                        break;
+                    case "AUTHOR":
+                        image.setAuthor(value);
+                        break;
+                    case "CREATOR":
+                        image.setCreator(value);
+                        break;
+                    case "CAPTURE_DATE":
+                        image.setCaptureDate(value);
+                        break;
+                    case "STORAGE_DATE":
+                        image.setStorageDate(value);
+                        break;
+                    case "FILENAME":
+                        image.setFilename(value);
+                        break;
+                }
+            }
+
+            images.add(image);
         }
-        return keywords;
+
+        return images;
     }
+   
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
