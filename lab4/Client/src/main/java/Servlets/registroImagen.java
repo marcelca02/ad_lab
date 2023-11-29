@@ -74,6 +74,8 @@ public class registroImagen extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         System.out.println("ENVIADO REGISTRO");
+        // Controla el tiempo
+        long startTime = System.currentTimeMillis();
             
             System.out.println(title + " " + description + " " + author + " " + keywords + " " + capture_date + " " + filename);
         
@@ -102,12 +104,19 @@ public class registroImagen extends HttpServlet {
             
             if (responsecode == HttpURLConnection.HTTP_OK){
                 System.out.println("Subido con exito");
+                // Finaliza el tiempo
+            long endTime = System.currentTimeMillis();
+            long elapsedTime = endTime - startTime;
+            System.out.println("El tiempo de ejecución de registro fue de: " + elapsedTime + " milisegundos.");
                 // Redirect
                 response.sendRedirect("/Client/menu.jsp");
             } else {
                 //response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
                 response.sendRedirect("/Client/error.jsp");
             }
+            
+            
+            
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

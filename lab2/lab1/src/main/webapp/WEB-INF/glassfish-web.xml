@@ -20,7 +20,7 @@
   <!--
   <property name="alternatedocroot_1" value="from=/images/* dir=C:/Users/Max Pasten/lab1"/>
   -->
-  <property name="alternatedocroot_1" value="from=/images/* dir=/var/webapp/lab1"/>
+  <property name="alternatedocroot_1" value="from=/images/* dir=C:/Users/Max Pasten/lab1"/>
   
 
   <class-loader delegate="true"/>
