@@ -23,10 +23,11 @@ public class Image {
     private String captureDate;
     private String storageDate;
     private String filename;
+    private String imageBase64;
     
     public Image() {}
 
-    public Image(int id, String title, String description, String[] keywords, String author, String creator, String captureDate, String storageDate, String filename) {
+    public Image(int id, String title, String description, String[] keywords, String author, String creator, String captureDate, String storageDate, String filename, String imageBase64) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -36,6 +37,7 @@ public class Image {
         this.captureDate = captureDate;
         this.storageDate = storageDate;
         this.filename = filename;
+	this.imageBase64 = imageBase64;
     }
 
     public int getId() {
@@ -73,6 +75,10 @@ public class Image {
     public String getFilename() {
         return filename;
     }
+    
+    public String getImage() {
+        return imageBase64;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -108,6 +114,10 @@ public class Image {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+    
+    public void setImage(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
     
     

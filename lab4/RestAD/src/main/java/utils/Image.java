@@ -23,6 +23,7 @@ public class Image {
     private String captureDate;
     private String storageDate;
     private String filename;
+    public String imageBase64;
     
     public Image() {}
 

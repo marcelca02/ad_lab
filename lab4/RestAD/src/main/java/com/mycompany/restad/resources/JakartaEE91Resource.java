@@ -29,7 +29,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -345,6 +347,8 @@ public class JakartaEE91Resource {
             JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
             
             // Convertir lista de image en JSON
+	    
+	    
 
             for (Image image : list) {
 		byte[] fileContent = FileUtils.readFileToByteArray(new File(constants.IMAGESDIR+image.getFilename()));
@@ -365,7 +369,6 @@ public class JakartaEE91Resource {
             }
 
             JsonArray json = jsonArrayBuilder.build();
-            System.out.println("ENVIA LISTA");
             return Response.ok().entity(json).build();
 
         } catch (SQLException | IOException ex) {
