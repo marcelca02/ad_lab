@@ -85,6 +85,8 @@ public class descargarImagen extends HttpServlet {
                         outputStream.close();
                         inputStream.close();
                         System.out.println("Imagen descargada exitosamente.");
+                        // Redirect
+                        response.sendRedirect("/Client/listaImagenes.jsp");
                     } else {
                         System.out.println("Error al descargar la imagen. Código de respuesta: " + responseCode);
                     }
