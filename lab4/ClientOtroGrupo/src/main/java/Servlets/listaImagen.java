@@ -123,12 +123,16 @@ public class listaImagen extends HttpServlet {
             }
             
             // Extracción de los valores
+            // "ID":"1" ==> 1
+            // Primedo dividimos por : luego quitamos los "" del inicio y final
             System.out.println("ID" + values[0].split(":")[1].substring(1, values[0].split(":")[1].length() - 1));
             int id = Integer.parseInt(values[0].split(":")[1].substring(1, values[0].split(":")[1].length() - 1));
             System.out.println("ID :"+ id);
             String title = values[1].split(":")[1].substring(1, values[1].split(":")[1].length() - 1);
             String description = values[2].split(":")[1].substring(1, values[2].split(":")[1].length() - 1);
-            String[] keywords = values[3].split(":")[1].split(" "); // Separar las palabras clave
+            // Primero dividimos por : y eliminamos los "" de las keywords y dividimos las palabras por " " o ,
+            // Separar las palabras clave
+            String[] keywords = values[3].split(":")[1].substring(1, values[3].split(":")[1].length() - 1).split("\\s|,\\s"); 
             String author = values[4].split(":")[1].substring(1, values[4].split(":")[1].length() - 1);
             String creator = values[5].split(":")[1].substring(1, values[5].split(":")[1].length() - 1);
             String captureDate = values[6].split(":")[1].substring(1, values[6].split(":")[1].length() - 1);
@@ -160,90 +164,6 @@ public class listaImagen extends HttpServlet {
                 request.getRequestDispatcher("listaImagenes.jsp").forward(request, response);
         
         
-
-        
-        
-        /*
-        
-        // Procesar cada objeto JSON individual
-        for (String jsonObject : jsonObjects) {
-            // Convertir los campos del objeto JSON en campos de Image
-            String[] fields = jsonObject.split(",");
-            Image image = new Image();
-
-            for (String field : fields) {
-                String[] keyValue = field.split(":");
-                String key = keyValue[0].replaceAll("\"", "").trim();
-                String value = keyValue[1].replaceAll("\"", "").trim();
-                
-                System.out.println(field);
-                System.out.println("key: "+ key);
-                System.out.println("Value: "+ value);
-
-                switch (key) {
-                    case "ID":
-                        image.setId(Integer.parseInt(value));
-                        break;
-                    case "TITLE":
-                        image.setTitle(value);
-                        break;
-                    case "DESCRIPTION":
-                        image.setDescription(value);
-                        break;
-                    case "KEYWORDS":
-                        image.setKeywords(value.split(", "));
-                        break;
-                    case "AUTHOR":
-                        image.setAuthor(value);
-                        break;
-                    case "CREATOR":
-                        image.setCreator(value);
-                        break;
-                    case "CAPTURE_DATE":
-                        image.setCaptureDate(value);
-                        break;
-                    case "STORAGE_DATE":
-                        image.setStorageDate(value);
-                        break;
-                    case "FILENAME":
-                        image.setFilename(value);
-                        break;
-                }
-            }
-            images.add(image);
-        }
-
-        // Verificar los datos
-        for (Image image : images) {
-            System.out.println("Title: " + image.getTitle());
-            System.out.println("Keywords:");
-            for (String keyword : image.getKeywords()) {
-                System.out.println("- " + keyword);
-            }
-            System.out.println("------------------------");
-        }
-    
-            
-          /*
-            
-            List<Image> images = convertToImageList(jsonString);
-
-          
-            // Ahora 'images' es una lista de objetos Image
-            for (Image image : images) {
-                // Puedes trabajar con cada objeto Image aquí
-                System.out.println(image.getTitle());
-                System.out.println(image.getId());
-                System.out.println(image.getDescription());
-                System.out.println(image.getKeywords());
-                System.out.println(image.getAuthor());
-                System.out.println(image.getCreator());
-                System.out.println(image.getCaptureDate());
-                System.out.println(image.getStorageDate());
-                System.out.println(image.getFilename());
-            }
-        
-        */
                     
         } catch (Exception e) {
             
@@ -251,63 +171,6 @@ public class listaImagen extends HttpServlet {
             response.sendRedirect("/error.jsp");
         }
 
-    }
-    
-    
-    private static List<Image> convertToImageList(String data) {
-        List<Image> images = new ArrayList<>();
-
-        // Eliminar corchetes exteriores y dividir los objetos individuales
-        String[] objects = data.substring(1, data.length() - 1).split("\\},\\{");
-
-        for (String obj : objects) {
-            // Dividir cada objeto en sus partes clave-valor
-            String[] parts = obj.replaceAll("[{}\"]", "").split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-
-            Image image = new Image();
-
-            for (String part : parts) {
-                String[] keyValue = part.split(":");
-                String key = keyValue[0].trim();
-                String value = keyValue[1].trim();
-
-                switch (key) {
-                    case "ID":
-                        image.setId(Integer.parseInt(value));
-                        break;
-                    case "TITLE":
-                        image.setTitle(value);
-                        break;
-                    case "DESCRIPTION":
-                        image.setDescription(value);
-                        break;
-                    case "KEYWORDS":
-                        // Procesamiento de las palabras clave
-                        String[] keywordsArray = value.split(", ");
-                        image.setKeywords(keywordsArray);
-                        break;
-                    case "AUTHOR":
-                        image.setAuthor(value);
-                        break;
-                    case "CREATOR":
-                        image.setCreator(value);
-                        break;
-                    case "CAPTURE_DATE":
-                        image.setCaptureDate(value);
-                        break;
-                    case "STORAGE_DATE":
-                        image.setStorageDate(value);
-                        break;
-                    case "FILENAME":
-                        image.setFilename(value);
-                        break;
-                }
-            }
-
-            images.add(image);
-        }
-
-        return images;
     }
    
 
