@@ -58,6 +58,7 @@ public class listaImagen extends HttpServlet {
             // Verificar el código de estado de la respuesta
             if (connection.getResponseCode() != 200) {
                 // Redirect
+                System.out.println("Error: Código de estado " + connection.getResponseCode());
                 response.sendRedirect("/Client/menu.jsp");
                 throw new RuntimeException("Error: Código de estado " + connection.getResponseCode());
             }
