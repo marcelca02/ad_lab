@@ -1,7 +1,15 @@
 from flask import Flask
-from .routes import config_routes
+from flask_sqlalchemy import SQLAlchemy
 
-def create_app():
+db = SQLAlchemy()
+
+def init_app():
     app = Flask(__name__)
-    config_routes(app)
-    return app
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.pr2'
+    db.init_app(app)
+
+    with app.app_context():
+        from . import routes
+        routes.config_routes(app)
+        db.create_all()
+        return app

@@ -1,9 +1,6 @@
-from app import create_app
-from lib import init_lib
+from app import init_app 
 
-app = create_app()
-init_lib(app)
-
+app = init_app()
 
 if __name__ == '__main__':
     app.run()
