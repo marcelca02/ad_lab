@@ -15,7 +15,7 @@ class DBMethods:
 
     def is_logged(self, username, password):
         user = User.query.filter_by(username=username).first()
-        if user:
-            return user.is_logged(username, password)
+        if user and user.password == password:
+            return True
         else:
             return False
