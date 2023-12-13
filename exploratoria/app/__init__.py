@@ -5,7 +5,7 @@ db = SQLAlchemy()
 
 def init_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.pr2'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pr2.db'
     db.init_app(app)
 
     with app.app_context():
@@ -13,3 +13,4 @@ def init_app():
         routes.config_routes(app)
         db.create_all()
         return app
+#init_app()

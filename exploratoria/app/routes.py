@@ -10,6 +10,7 @@ def config_routes(app):
 
     @app.route('/login', methods=['POST'])
     def login():
+        print("login")
         username = request.form['username']
         password = request.form['password']
         if username and password:
