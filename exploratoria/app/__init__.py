@@ -13,4 +13,3 @@ def init_app():
         routes.config_routes(app)
         db.create_all()
         return app
-#init_app()

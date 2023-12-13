@@ -13,13 +13,10 @@ class DBMethods:
         with self.app.app_context():
             db.drop_all()
 
-    def is_logged(self, username, password):        
-    
-        # Buscar el usuario en la base de datos
-        user = User.query.filter_by(username=username, password=password).first()
 
-        # Si se encontró un usuario con esa combinación de usuario y contraseña, retorna True
-        return user is not None
-
-    def create_image():
-        pass
+    def is_logged(self, username, password):
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            return True
+        else:
+            return False
