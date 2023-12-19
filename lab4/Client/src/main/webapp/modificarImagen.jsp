@@ -78,14 +78,15 @@
                     <input type="date" name="date" value="${date}" required></input>
 		    <br>
                     <br>
-<<<<<<< HEAD
+		    <label>Autor:</label>
+                    <input name="filename" value="${oldFilename}" required></input>
+		    <br>
+                    <br>
 		    <label for="nombre_imagen">Nombre Archivo:</label>
                     <input type="file" id="imagen" name="file" accept="image/*" onchange="previewImage(event)" required>
 		    
-=======
-                    <label>Autor:</label>
-                    <input name="filename" value="${oldFilename}" required></input>
->>>>>>> main
+                    
+
                     
                     <input type="hidden" name="imageId" value="${imageId}">
                     <input type="hidden" name="imageCreator" value="${imageCreator}">
