@@ -19,3 +19,9 @@ class DBMethods:
             return True
         else:
             return False
+    
+    def list_images(self):
+        images = Image.query.all()
+        return images
+
+        
