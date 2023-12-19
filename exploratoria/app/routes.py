@@ -22,7 +22,7 @@ def config_routes(app):
                 return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
     @app.route('/listImages', methods=['GET'])
-    def listImages():
+    def list_images():
         db_methods = DBMethods(app)
         images = db_methods.list_images()
         image_list = [
@@ -68,6 +68,36 @@ def config_routes(app):
             print(e)
             return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
         
+
     @app.route('/modifyImage', methods=['POST'])
-    def modifyImage():
-        pass
+    def modify_image():
+        id = request.form['id']
+        name = request.form['name']
+        description = request.form['description']
+        keywords = request.form['keywords']
+        author = request.form['author']
+        creator = request.form['creator']
+        date_capture = request.form['date_capture']
+        filename = request.form['filename']
+        try:
+            db_methods = DBMethods(app)
+            if db_methods.modify_image(id, name, description, keywords, author, creator, date_capture, filename):
+                return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+            else:
+                return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+        except Exception as e:
+            return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+
+    @app.route('/deleteImage', methods=['POST'])
+    def delete_image():
+        id = request.form['id']
+        try:
+            db_methods = DBMethods(app)
+            if db_methods.delete_image(id):
+                return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+            else:
+                return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+        except Exception as e:
+            return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+
+
