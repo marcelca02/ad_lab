@@ -13,15 +13,28 @@ class DBMethods:
         with self.app.app_context():
             db.drop_all()
 
+
     def is_logged(self, username, password):
         user = User.query.filter_by(username=username).first()
         if user and user.password == password:
-            return True
+            print("User logged")
+            return user
         else:
             return False
     
     def list_images(self):
         images = Image.query.all()
         return images
-
         
+
+    def create_image (self, name, description, keywords, author, creator, date_capture, date_upload, filename):
+        image = Image(name, description, keywords, author, creator, date_capture, date_upload, filename)
+        db.session.add(image)
+        db.session.commit()
+        return True
+
+    def modify_image ():
+        pass
+
+    def delete_image ():
+        pass    
