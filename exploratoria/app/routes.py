@@ -21,8 +21,8 @@ def config_routes(app):
             else:
                 return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
-    @app.route('/list', methods=['GET'])
-    def list():
+    @app.route('/listImages', methods=['GET'])
+    def listImages():
         db_methods = DBMethods(app)
         images = db_methods.list_images()
         image_list = [
@@ -68,20 +68,6 @@ def config_routes(app):
             print(e)
             return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
         
-    @app.route('/listImages', methods=['GET'])
-    def listImages():
-        print("List images")
-        try:
-            db_methods = DBMethods(app)
-            images = db_methods.list_images()
-            print("IMAGES:")
-            print(images)
-
-        except Exception as e:
-            print(e)
-            return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
-        pass
-
     @app.route('/modifyImage', methods=['POST'])
     def modifyImage():
         pass
