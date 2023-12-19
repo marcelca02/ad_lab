@@ -496,8 +496,8 @@ public class JakartaEE91Resource {
             @FormParam("keywords") String keywords, 
             @FormParam("author") String author){
             
-            System.out.println("title=" + date_ini);
-            System.out.println("description=" +date_end);
+            System.out.println("Date Ini=" + date_ini);
+            System.out.println("Date Fin=" +date_end);
             System.out.println("keywords=" +keywords);
             System.out.println("author=" +author);
             
