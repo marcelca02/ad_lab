@@ -1,23 +1,24 @@
 <%-- 
-    Document   : buscaImagen
-    Created on : 18 oct. de 2023, 10:11:32
+    Document   : listaImagenes
+    Created on : 14 oct. de 2023, 12:40:57
     Author     : Max Pasten
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@ page import="utils.Image" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Búsqueda</title>
+        <title>Menú</title>
         <link rel="stylesheet" type="text/css" href="css/general.css"/>
-        <style>            
+
+        <style>
             
             .image-container {
                 display: flex;
@@ -39,12 +40,23 @@
             .attribute-label {
                 font-weight: bold; /* Pone el texto en negritas */
             }
+            
+            
+            .button-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .button-container button {
+                margin: 5px;
+            }
+            
         </style>
     </head>
     <body>
         <div class="navbar">
             <%= session.getAttribute("username") %>
-            <h1>Búsqueda</h1>
+            <h1>Lista de Imagenes</h1>
         </div>
         <div class="content">
             <div class="sidebar">
@@ -56,48 +68,24 @@
                 </ul>
             </div>
             <div class="main-content">
-                
-                <h2>Busqueda por filtros:</h2><br>
-                <form action="buscaImagen" method="post">
-                    
-                    <label for="fecha_inicio">Fecha de Inicio:</label>
-                    <input type="date" id="fecha_inicio" name="fecha_inicio" required><br><br>
-
-                    <label for="fecha_fin">Fecha de Fin:</label>
-                    <input type="date" id="fecha_fin" name="fecha_fin" required><br><br>
-                    
-                    <label for="authorB">Autor:</label>
-                    <input type="text" id="authorB" name="authorB"><br><br>
-                    
-                    <label for="keywordsB">Palabras Clave:</label>
-                    <input type="text" id="keywordsB" name="keywordsB"><br><br>
-
-                    <input type="submit" value="Buscar">
-                </form>
-                
-                
-                
+                <h2>Imágenes</h2>
                 <div align="center">
 
-                    <%    
-                        request.getRequestDispatcher("/buscaImagen").include(request, response);
+                    <%
+                        request.getRequestDispatcher("/listaImagen").include(request, response);
                         List<Image> images = (List<Image>)request.getAttribute("images");
-                        
-                        if (images != null && !images.isEmpty()) {
-                            
+			System.out.println(images);
                     %>
-                    <h3>Imagenes Encontradas</h3>
+                    
                     <table border="1">
-                        
-                        <c:forEach var="image" items="${images}"> 
-                            
+                         <c:forEach var="image" items="${images}">
                             <div class="image-container">
                                 <img src="data:image/png;base64, ${image.getImage()}" alt="Imagen" />
                                 <div class="image-attributes">
                                     <div><span class="attribute-label">ID:</span> ${image.id}</div>
                                     <div><span class="attribute-label">Título:</span> ${image.title}</div>
                                     <div><span class="attribute-label">Descriptión:</span> ${image.description}</div>
-                                    <div><span class="attribute-label">Palabras clave:</span>
+                                    <div><span class="attribute-label">Palabras Clave:</span>
                                         <c:set var="myArray" value="${image.keywords}" />
                                         <c:forEach var="elemento" items="${myArray}" varStatus="status">
                                             ${elemento}<c:if test="${!status.last}">,</c:if>
@@ -109,7 +97,8 @@
                                     <div><span class="attribute-label">Fecha Registro:</span> ${image.storageDate}</div>
                                     <div><span class="attribute-label">Nombre Archivo:</span> ${image.filename}</div>
                                     <div><a href="images/${image.filename}" target="_blank">Imagen completa</a></div>
-                                </div>                                
+                                     
+                                </div>
                                 
                                 <c:set var="userCre" value= "${image.creator}" />
                                 <c:set var="keywordsList" value= "${image.keywords}" />
@@ -120,13 +109,11 @@
                                     String[] keywordsList = (String[])pageContext.getAttribute("keywordsList");
                                     String keywords = String.join(", ", keywordsList);
                                     request.setAttribute("keywords", keywords);
-                                    
+
                                     if (userCre.equals(userLog)){
                                     
-                                %>    
+                                %>
                                 
-                                
-
                                 <div class="button-container">
                                     <form action="modificarImagen.jsp" method="post">
                                         <input type="hidden" name="imageId" value="${image.id}">
@@ -138,39 +125,32 @@
                                         <input type="hidden" name="date" value="${image.captureDate}">
                                         <input type="hidden" name="oldFilename" value="${image.filename}">
                                         <button type="submit" name="action" value="modificar">Modificar</button>
+					
                                     </form>
-                                    <form action="eliminarImagen" method="get">
+                                    <form action="confirmacionEliminar.jsp" method="post">
                                         <input type="hidden" name="imageId" value="${image.id}">
                                         <input type="hidden" name="imageCreator" value="${image.creator}">
                                         <input type="hidden" name="filename" value="${image.filename}">
                                         <button type="submit">Eliminar</button>
+                                    </form>
+				    <form action="descargarImagen" method="post">
+                                        <input type="hidden" name="imageId" value="${image.id}">
+                                        <input type="hidden" name="imageCreator" value="${image.creator}">
+                                        <input type="hidden" name="filename" value="${image.filename}">
+                                        <button type="submit">Descargar</button>
                                     </form>
                                 </div>
 
                                 <% 
                                     }
                                 %>
-                                
                             </div>
                         </c:forEach>
                     </table>
-                    <%
-                        } else {
-                    %>
-                    
-                    <div style="text-align: center; margin-top: 50vh; transform: translateY(-50%);">
-                        <h1>No se encontró ninguna imagen</h1>
-                    </div>
-                    
-                    <%
-                        }
-                    %>
+
 
                 </div>
-                
             </div>
         </div>
     </body>
 </html>
-
-
