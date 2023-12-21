@@ -74,7 +74,7 @@ public class descargarImagen extends HttpServlet {
                     int responseCode = connection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_OK) {
                         InputStream inputStream = connection.getInputStream();
-                        FileOutputStream outputStream = new FileOutputStream(constants.IMAGESDIR + "/" + filename);
+                        FileOutputStream outputStream = new FileOutputStream(constants.DOWNLOADDIR + "/" + filename);
 
                         byte[] buffer = new byte[4096];
                         int bytesRead;
