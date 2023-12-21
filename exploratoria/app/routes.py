@@ -56,22 +56,14 @@ def config_routes(app):
             image_data = request.data
             
             # Obtener los siete atributos del encabezado enviado por el servlet
-            name = request.headers.get('title')
-            print("Name:", name)
-            description = request.headers.get('description')
-            print("Description:", description)
-            keywords = request.headers.get('keywords')
-            print("Keywords:", keywords)
-            author = request.headers.get('author')
-            print("Author:", author)
-            creator = request.headers.get('creator')
-            print("Creator:", creator)
-            filename = request.headers.get('filename')
-            print("Filename:", filename)
-            date_capture = request.headers.get('f1')
-            print("f1:", date_capture)
-            date_upload = request.headers.get('f2')
-            print("f2:", date_upload)
+            name = request.headers.get('title')            
+            description = request.headers.get('description')            
+            keywords = request.headers.get('keywords')            
+            author = request.headers.get('author')            
+            creator = request.headers.get('creator')            
+            filename = request.headers.get('filename')            
+            date_capture = request.headers.get('f1')            
+            date_upload = request.headers.get('f2')            
 
             date_upload = datetime.strptime(date_upload, '%Y-%m-%d')
             date_capture = datetime.strptime(date_capture, '%Y-%m-%d')
@@ -95,33 +87,6 @@ def config_routes(app):
         except Exception as e:
             print(e)
             return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
-            
-            '''
-        print("Create image")
-
-        name = request.form['title']
-        print("Name: " + name)
-        description = request.form['description']
-        print("Description: " + description)
-        keywords = request.form['keywords']
-        print("Keywords: " + keywords)
-        author = request.form['author']
-        print("Author: " + author)
-        creator = request.form['creator']
-        print("Creator: " + creator)
-        date_capture = request.form['capture_date']
-        print("Date capture: " + date_capture)
-        date_upload = request.form['storage_date']
-        print("Date upload: " + date_upload)
-        filename = request.form['filename']
-        print("Filename: " + filename)
-
-        # Obteniendo el archivo de la solicitud
-        file = request.files['file']
-        file.save(os.path.join('C://Users//Max Pasten//OneDrive - UCB//Documentos//NetBeansProjects//AD//', filename))
-
-        
-        '''
 
     @app.route('/modifyImage', methods=['POST'])
     def modify_image():
