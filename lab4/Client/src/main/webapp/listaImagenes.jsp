@@ -96,7 +96,6 @@
                                     <div><span class="attribute-label">Fecha Captura:</span> ${image.captureDate}</div>
                                     <div><span class="attribute-label">Fecha Registro:</span> ${image.storageDate}</div>
                                     <div><span class="attribute-label">Nombre Archivo:</span> ${image.filename}</div>
-                                    <div><a href="images/${image.filename}" target="_blank">Imagen completa</a></div>
                                      
                                 </div>
                                 
