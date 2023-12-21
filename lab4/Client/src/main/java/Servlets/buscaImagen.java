@@ -117,7 +117,7 @@ public class buscaImagen extends HttpServlet {
                     image.setCaptureDate(jsonImage.getString("captureDate"));
                     image.setStorageDate(jsonImage.getString("storageDate"));
                     image.setFilename(jsonImage.getString("filename"));
-                    image.setImage(jsonImage.getString("image"));
+                    //image.setImage(jsonImage.getString("image"));
 
                     // Añadir el objeto Image a la lista
                     imagesList.add(image);

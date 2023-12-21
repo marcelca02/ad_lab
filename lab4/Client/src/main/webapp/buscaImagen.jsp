@@ -92,7 +92,7 @@
                         <c:forEach var="image" items="${images}"> 
                             
                             <div class="image-container">
-                                <img src="data:image/png;base64, ${image.getImage()}" alt="Imagen" />
+                                <img src="images/${image.filename}"  alt="Imagen" />
                                 <div class="image-attributes">
                                     <div><span class="attribute-label">ID:</span> ${image.id}</div>
                                     <div><span class="attribute-label">Título:</span> ${image.title}</div>
