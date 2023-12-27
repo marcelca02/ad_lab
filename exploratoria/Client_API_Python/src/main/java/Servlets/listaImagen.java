@@ -23,6 +23,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import java.io.StringReader;
 
 
 
@@ -59,60 +60,70 @@ public class listaImagen extends HttpServlet {
             if (connection.getResponseCode() != 200) {
                 // Redirect
                 System.out.println("Error: Código de estado " + connection.getResponseCode());
-                response.sendRedirect("/Client/menu.jsp");
+                response.sendRedirect("/Client_API_Python/menu.jsp");
                 throw new RuntimeException("Error: Código de estado " + connection.getResponseCode());
             }
 
             // Leer la respuesta JSON
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            JsonReader jsonReader = Json.createReader(reader);
-            JsonArray jsonArray = jsonReader.readArray();
+            StringBuilder jsonResponse = new StringBuilder();
+            String line;
 
-            // Convertir el JSON a una lista de objetos Image
+            while ((line = reader.readLine()) != null) {
+                jsonResponse.append(line);
+            }
+
+            reader.close();
+
+            // Configurar tiempo de espera para la conexión 
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
+
+            // Convertir la respuesta JSON a una lista de objetos Image
+            JsonArray jsonArray = Json.createReader(new StringReader(jsonResponse.toString())).readArray();
             List<Image> imagesList = new ArrayList<>();
+
             for (int i = 0; i < jsonArray.size(); i++) {
                 JsonObject jsonImage = jsonArray.getJsonObject(i);
 
                 // Crear un objeto Image y agregarlo a la lista
                 Image image = new Image();
                 image.setId(jsonImage.getInt("id"));
-                image.setTitle(jsonImage.getString("title"));
+                System.out.println("Image: " + jsonImage.getInt("id"));
+                image.setTitle(jsonImage.getString("name"));
+                System.out.println("Image: " + jsonImage.getString("name"));
                 image.setDescription(jsonImage.getString("description"));
-                image.setKeywords(getKeywordsArray(jsonImage.getJsonArray("keywords")));
+                System.out.println("Image: " + jsonImage.getString("name"));
+                image.setKeywords(jsonImage.getString("keywords").split("[,\\s]+"));
+                System.out.println("Image: " + jsonImage.getString("keywords").split("[,\\s]+"));
                 image.setAuthor(jsonImage.getString("author"));
                 image.setCreator(jsonImage.getString("creator"));
-                image.setCaptureDate(jsonImage.getString("captureDate"));
-                image.setStorageDate(jsonImage.getString("storageDate"));
+                image.setCaptureDate(jsonImage.getString("date_capture"));
+                image.setStorageDate(jsonImage.getString("date_upload"));
                 image.setFilename(jsonImage.getString("filename"));
-		image.setImage(jsonImage.getString("image"));
+                image.setImage(jsonImage.getString("base64"));
 
                 // Añadir el objeto Image a la lista
                 imagesList.add(image);
             }
 
-
             // Cerrar la conexión
             connection.disconnect();
-            
-            request.setAttribute("images", imagesList);
-//            request.getRequestDispatcher("listaImagenes.jsp").forward(request, response);
-            
 
+            // Establecer la lista de imágenes como un atributo en el request
+            request.setAttribute("images", imagesList);
+            // Verificar si la respuesta aún no ha sido confirmada o redirigida
+            if (!response.isCommitted()) {
+                // Redirigir a listaImagenes.jsp
+                request.getRequestDispatcher("listaImagenes.jsp").forward(request, response);
+            }
         } catch (Exception e) {
-            // Redirect
-            response.sendRedirect("/Client/menu.jsp");
+            // Manejo de errores: Redirigir a menu.jsp en caso de excepción
+            response.sendRedirect("/Client_API_Python/menu.jsp");
             e.printStackTrace();
         }
     }
-    
-    // Método auxiliar para convertir el JsonArray de keywords a un array de strings
-    private static String[] getKeywordsArray(JsonArray keywordsArray) {
-        String[] keywords = new String[keywordsArray.size()];
-        for (int i = 0; i < keywordsArray.size(); i++) {
-            keywords[i] = keywordsArray.getString(i);
-        }
-        return keywords;
-    }
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

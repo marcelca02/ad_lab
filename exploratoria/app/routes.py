@@ -5,7 +5,7 @@ from .constants import *
 import json 
 import os
 from datetime import datetime
-
+import base64
 
 def config_routes(app):
     @app.route('/')
@@ -30,19 +30,36 @@ def config_routes(app):
     def list_images():
         db_methods = DBMethods(app)
         images = db_methods.list_images()
-        image_list = [
-            {
-                'id': image.id,
-                'name': image.name,
-                'description': image.description,
-                'keywords': image.keywords,
-                'author': image.author,
-                'creator': image.creator,
-                'date_capture': image.date_capture,
-                'date_upload': image.date_upload,
-                'filename': image.filename
-            } for image in images
-        ]
+        image_list = []
+
+        for image in images:
+            # Ruta de la imagen que quieres convertir a base64
+            file_path = IMAGE_DIR +  image.filename
+
+            # Abre la imagen en modo de lectura en binario
+            with open(file_path, 'rb') as imagen_file:
+                # Lee los datos de la imagen
+                imagen_datos = imagen_file.read()
+                # Convierte los datos de la imagen a base64
+                imagen_base64 = base64.b64encode(imagen_datos)
+
+                # Decodifica la representación base64 a formato de cadena (si se desea)
+                imagen_base64_str = imagen_base64.decode('utf-8')
+
+                # Agrega los detalles de la imagen y la representación en base64 a la lista de imágenes
+                image_list.append({
+                    'id': image.id,
+                    'name': image.name,
+                    'description': image.description,
+                    'keywords': image.keywords,
+                    'author': image.author,
+                    'creator': image.creator,
+                    'date_capture': image.date_capture,
+                    'date_upload': image.date_upload,
+                    'filename': image.filename,
+                    'base64': imagen_base64_str  # Agrega la representación base64 aquí
+                })
+        #print(image_list)
         json = jsonify(image_list)
         
         if json:
