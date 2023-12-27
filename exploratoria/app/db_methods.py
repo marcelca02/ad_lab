@@ -58,5 +58,4 @@ class DBMethods:
         if image:
             return image.filename
         else:
-            return False
-
+            return ""
