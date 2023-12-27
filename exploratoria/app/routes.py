@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from .db_methods import DBMethods
+from .file_manager import rename_file
 import json 
 import os
 from datetime import datetime
@@ -101,10 +102,12 @@ def config_routes(app):
         try:
             db_methods = DBMethods(app)
             if db_methods.modify_image(id, name, description, keywords, author, creator, date_capture, filename):
+                old_filename = db_methods.get_image_filename(id)
+                rename_file(old_filename,filename) 
                 return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
             else:
                 return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
-        except Exception as e:
+        except Exception:
             return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
     @app.route('/deleteImage', methods=['POST'])
@@ -118,5 +121,4 @@ def config_routes(app):
                 return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
         except Exception as e:
             return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
-
 

@@ -53,3 +53,10 @@ class DBMethods:
         db.session.commit()
         return deleted
 
+    def get_image_filename(self, id):
+        image = Image.query.filter_by(id=id).first()
+        if image:
+            return image.filename
+        else:
+            return False
+
