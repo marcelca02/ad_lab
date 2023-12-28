@@ -60,7 +60,7 @@ public class buscaImagen extends HttpServlet {
         
         
         
-        URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/searchCombined");
+        URL url = new URL("http://127.0.0.1:5000/searchImages");
         // Conectar URL
         try {
             URLConnection myURLConnection = url.openConnection();
