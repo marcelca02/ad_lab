@@ -1,5 +1,6 @@
 from . import db
 from .models import User, Image
+from datetime import datetime
 
 class DBMethods:
     def __init__(self, app):
@@ -59,3 +60,19 @@ class DBMethods:
             return image.filename
         else:
             return ""
+
+    def search_images_by_date(self, date_start, date_end):
+        images = Image.query.filter(Image.date_upload.between(datetime.fromisoformat(date_start), datetime.fromisoformat(date_end))).all()
+        return images
+    
+    def search_images_by_date_author(self, date_start, date_end, author):
+        images = Image.query.filter(Image.date_upload.between(datetime.fromisoformat(date_start), datetime.fromisoformat(date_end)), Image.author == author).all()
+        return images
+    
+    def search_images_by_date_author_keywords(self, date_start, date_end, author, keywords):
+        images = Image.query.filter(Image.date_upload.between(datetime.fromisoformat(date_start), datetime.fromisoformat(date_end)), Image.author == author, Image.keywords.ilike(f"%{keywords}%")).all()
+        return images
+    
+    def search_images_by_date_keywords(self, date_start, date_end, keywords):
+        images = Image.query.filter(Image.date_upload.between(datetime.fromisoformat(date_start), datetime.fromisoformat(date_end)), Image.keywords.ilike(f"%{keywords}%")).all()
+        return images

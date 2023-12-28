@@ -149,7 +149,7 @@ def config_routes(app):
         id = request.form['id']
         try:
             db_methods = DBMethods(app)
-            filename = IMAGE_DIR + db_methods.get_image_filename(id)
+            filename = DOWNLOAD_DIR + db_methods.get_image_filename(id)
             return send_file(filename, mimetype='image/jpg')
         except Exception as e:
             print(e)
