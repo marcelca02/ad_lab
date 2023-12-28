@@ -12,6 +12,7 @@ public class constants {
 
     public static final String IMAGESDIR = "/var/webapp/lab1/images/";
     public static final String APPDIR = "/var/webapp/lab1";   
+    public static final String DOWNLOADDIR = "/var/webapp/lab1/images/download/";
     //public static final String IMAGESDIR = "C:/Users/Max Pasten/lab1/client/";
     //public static final String APPDIR = "C:/Users/Max Pasten/lab1";
 
