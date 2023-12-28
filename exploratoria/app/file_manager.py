@@ -24,4 +24,3 @@ class FileManager:
             return True
         except:
             return False
-

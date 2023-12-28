@@ -1,16 +1,16 @@
-from flask import jsonify, request
+from flask import jsonify, request, send_file, redirect, url_for
 from .db_methods import DBMethods
 from .file_manager import FileManager
 from .constants import *
 import json 
-import os
 from datetime import datetime
 import base64
 
 def config_routes(app):
     @app.route('/')
     def index():
-        return 'Hello world from routes.py!'
+        # Redireccionar a la página de inicio de sesión
+        return redirect(url_for('login'))
 
     @app.route('/login', methods=['POST'])
     def login():
@@ -144,3 +144,13 @@ def config_routes(app):
             print(e)
             return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
+    @app.route('/downloadImage', methods=['GET'])
+    def download_image():
+        id = request.form['id']
+        try:
+            db_methods = DBMethods(app)
+            filename = IMAGE_DIR + db_methods.get_image_filename(id)
+            return send_file(filename, mimetype='image/jpg')
+        except Exception as e:
+            print(e)
+            return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
