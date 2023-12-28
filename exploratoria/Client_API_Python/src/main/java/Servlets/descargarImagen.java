@@ -42,30 +42,8 @@ public class descargarImagen extends HttpServlet {
 		String id = request.getParameter("imageId");
 		String filename = request.getParameter("filename");
                 
-		
-		/*
-		// URL del servicio
-		URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/getImage"+"/"+filename);
-		// Abrir la conexión HTTP
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-		// Configurar la solicitud
-		connection.setRequestMethod("GET");
-		connection.setRequestProperty("Accept", "application/json");
-
-		// Verificar el código de estado de la respuesta
-		if (connection.getResponseCode() != 200) {
-		    // Redirect
-		    response.sendRedirect("/Client/listarImagenes.jsp");
-		    throw new RuntimeException("Error: Código de estado " + connection.getResponseCode());
-		}
-		
-		// OBTENER EL ARCHIVO QUE LLEGA DE LA LLAMADA
-		*/
-                
-                
                 try {
-                    String serverURL = "http://localhost:8080/RestAD/resources/jakartaee9/getImage"+"/"+filename;
+                    String serverURL = "http://localhost:5000/downloadImage/"+filename;
                     URL url = new URL(serverURL);
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
