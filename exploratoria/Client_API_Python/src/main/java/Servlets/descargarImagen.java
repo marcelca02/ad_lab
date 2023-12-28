@@ -52,8 +52,8 @@ public class descargarImagen extends HttpServlet {
                     int responseCode = connection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_OK) {
                         InputStream inputStream = connection.getInputStream();
-                        FileOutputStream outputStream = new FileOutputStream(constants.IMAGESDIR + "/" + filename);
-
+                        FileOutputStream outputStream = new FileOutputStream(constants.DOWNLOADDIR + "/" + filename);
+			System.out.print(constants.DOWNLOADDIR  + filename);
                         byte[] buffer = new byte[4096];
                         int bytesRead;
                         while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -62,9 +62,8 @@ public class descargarImagen extends HttpServlet {
 
                         outputStream.close();
                         inputStream.close();
-                        System.out.println("Imagen descargada exitosamente.");
                         // Redirect
-                        response.sendRedirect("/Client/listaImagenes.jsp");
+                        response.sendRedirect("/Client_API_Python/listaImagenes.jsp");
                     } else {
                         System.out.println("Error al descargar la imagen. Código de respuesta: " + responseCode);
                     }
