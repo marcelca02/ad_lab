@@ -49,10 +49,10 @@
         <div class="content">
             <div class="sidebar">
                 <ul class="menu">
-                    <li><a href="/Client/registro_imagen.jsp">Registrar Imagen</a></li>
-                    <li><a href="/Client/listaImagenes.jsp">Listar Imágenes</a></li>
-                    <li><a href="/Client/buscaImagen.jsp">Buscar Imagen</a></li>
-                    <li><a href="/Client/cerrarSesion">Cerrar Sesión</a></li>
+                    <li><a href="./registro_imagen.jsp">Registrar Imagen</a></li>
+                    <li><a href="./listaImagenes.jsp">Listar Imágenes</a></li>
+                    <li><a href="./buscaImagen.jsp">Buscar Imagen</a></li>
+                    <li><a href="./cerrarSesion">Cerrar Sesión</a></li>
                 </ul>
             </div>
             <div class="main-content">

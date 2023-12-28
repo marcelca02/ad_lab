@@ -32,7 +32,7 @@ def config_routes(app):
         image_list = []
 
         for image in images:
-            # Ruta de la imagen que quieres convertir a base64
+            # Ruta de la imagen para convertir a base64
             file_path = IMAGE_DIR +  image.filename
 
             # Abre la imagen en modo de lectura en binario
@@ -56,7 +56,7 @@ def config_routes(app):
                     'date_capture': image.date_capture,
                     'date_upload': image.date_upload,
                     'filename': image.filename,
-                    'base64': imagen_base64_str  # Agrega la representación base64 aquí
+                    'base64': imagen_base64_str 
                 })
         #print(image_list)
         json = jsonify(image_list)
@@ -146,9 +146,76 @@ def config_routes(app):
     @app.route('/downloadImage/<filename>', methods=['GET'])
     def download_image(filename):
         try:
-            db_methods = DBMethods(app)
             filename = IMAGE_DIR + filename
             return send_file(filename, mimetype='image/jpg')
         except Exception as e:
             print(e)
+            return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+
+    @app.route('/searchImages', methods=['POST'])
+    def search_images():
+        print("searchImages")
+
+        date_ini = request.form['date_ini']
+        date_fin = request.form['date_fin']
+        keywords = request.form['keywords']
+        author = request.form['author']
+
+        #date_ini = datetime.strptime(date_ini, '%Y-%m-%d')
+        #date_fin = datetime.strptime(date_fin, '%Y-%m-%d')
+
+        db_methods = DBMethods(app)
+        
+        image_list = []
+
+
+        if len(author) == 0 and len(keywords) == 0:
+            print("search Images Date")
+            images = db_methods.search_images_by_date(date_ini, date_fin)
+        elif len(author) != 0 and len(keywords) != 0:
+            print("search Images Date Keywords Author")
+            images = db_methods.search_images_by_date_author_keywords(date_ini, date_fin, author, keywords)
+        elif len(keywords) != 0 and len(author) == 0:
+            print("search Images Date Keywords")
+            images = db_methods.search_images_by_date_keywords(date_ini, date_fin, keywords)
+        elif len(keywords) == 0 and len(author) != 0:
+            print("search Images Date Author")
+            images = db_methods.search_images_by_date_author(date_ini, date_fin, author)
+
+        print("Llega")
+        for image in images:
+            # Ruta de la imagen para convertir a base64
+            file_path = IMAGE_DIR +  image.filename
+
+            # Abre la imagen en modo de lectura en binario
+            with open(file_path, 'rb') as imagen_file:
+                # Lee los datos de la imagen
+                imagen_datos = imagen_file.read()
+                # Convierte los datos de la imagen a base64
+                imagen_base64 = base64.b64encode(imagen_datos)
+
+                # Decodifica la representación base64 a formato de cadena (si se desea)
+                imagen_base64_str = imagen_base64.decode('utf-8')
+
+                # Agrega los detalles de la imagen y la representación en base64 a la lista de imágenes
+                image_list.append({
+                    'id': image.id,
+                    'name': image.name,
+                    'description': image.description,
+                    'keywords': image.keywords,
+                    'author': image.author,
+                    'creator': image.creator,
+                    'date_capture': image.date_capture,
+                    'date_upload': image.date_upload,
+                    'filename': image.filename,
+                    'base64': imagen_base64_str  
+                })
+                print("image id: ", image.id)
+                print("image name: ", image.name)
+        #print(image_list)
+        json = jsonify(image_list)
+        
+        if json:
+            return json, 200, {'ContentType':'application/json'}
+        else:
             return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
