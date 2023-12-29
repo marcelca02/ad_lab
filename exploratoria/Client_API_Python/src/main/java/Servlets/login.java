@@ -110,7 +110,7 @@ public class login extends HttpServlet {
         } catch (Exception e){
             e.printStackTrace();
             System.out.println("Error: " + e);
-            response.sendRedirect("/Client_API_Python/error.jsp");
+            response.sendRedirect("./error.jsp");
         }
 
         

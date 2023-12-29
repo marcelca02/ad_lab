@@ -1,5 +1,6 @@
 import os
 from .constants import *
+import base64
 
 class FileManager:
     def rename_file(self,old_filename, new_filename):
@@ -24,3 +25,10 @@ class FileManager:
             return True
         except:
             return False
+    
+    def get_base64(self, file_path):
+        with open(file_path, 'rb') as imagen_file:
+            imagen_datos = imagen_file.read()
+            imagen_base64 = base64.b64encode(imagen_datos)
+            imagen_base64_str = imagen_base64.decode('utf-8')
+        return imagen_base64_str

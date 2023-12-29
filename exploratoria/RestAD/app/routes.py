@@ -4,7 +4,6 @@ from .file_manager import FileManager
 from .constants import *
 import json 
 from datetime import datetime
-import base64
 
 def config_routes(app):
     @app.route('/')
@@ -34,30 +33,20 @@ def config_routes(app):
         for image in images:
             # Ruta de la imagen para convertir a base64
             file_path = IMAGE_DIR +  image.filename
-
-            # Abre la imagen en modo de lectura en binario
-            with open(file_path, 'rb') as imagen_file:
-                # Lee los datos de la imagen
-                imagen_datos = imagen_file.read()
-                # Convierte los datos de la imagen a base64
-                imagen_base64 = base64.b64encode(imagen_datos)
-
-                # Decodifica la representación base64 a formato de cadena (si se desea)
-                imagen_base64_str = imagen_base64.decode('utf-8')
-
-                # Agrega los detalles de la imagen y la representación en base64 a la lista de imágenes
-                image_list.append({
-                    'id': image.id,
-                    'name': image.name,
-                    'description': image.description,
-                    'keywords': image.keywords,
-                    'author': image.author,
-                    'creator': image.creator,
-                    'date_capture': image.date_capture,
-                    'date_upload': image.date_upload,
-                    'filename': image.filename,
-                    'base64': imagen_base64_str 
-                })
+            fm = FileManager()
+            imagen_base64_str = fm.get_base64(file_path)
+            image_list.append({
+                'id': image.id,
+                'name': image.name,
+                'description': image.description,
+                'keywords': image.keywords,
+                'author': image.author,
+                'creator': image.creator,
+                'date_capture': image.date_capture,
+                'date_upload': image.date_upload,
+                'filename': image.filename,
+                'base64': imagen_base64_str 
+            })
         #print(image_list)
         json = jsonify(image_list)
         
@@ -181,37 +170,27 @@ def config_routes(app):
         elif len(keywords) == 0 and len(author) != 0:
             print("search Images Date Author")
             images = db_methods.search_images_by_date_author(date_ini, date_fin, author)
-
+        else:
+            images = []
         print("Llega")
         for image in images:
             # Ruta de la imagen para convertir a base64
             file_path = IMAGE_DIR +  image.filename
+            fm = FileManager()
+            imagen_base64_str = fm.get_base64(file_path)
+            image_list.append({
+                'id': image.id,
+                'name': image.name,
+                'description': image.description,
+                'keywords': image.keywords,
+                'author': image.author,
+                'creator': image.creator,
+                'date_capture': image.date_capture,
+                'date_upload': image.date_upload,
+                'filename': image.filename,
+                'base64': imagen_base64_str  
+            })
 
-            # Abre la imagen en modo de lectura en binario
-            with open(file_path, 'rb') as imagen_file:
-                # Lee los datos de la imagen
-                imagen_datos = imagen_file.read()
-                # Convierte los datos de la imagen a base64
-                imagen_base64 = base64.b64encode(imagen_datos)
-
-                # Decodifica la representación base64 a formato de cadena (si se desea)
-                imagen_base64_str = imagen_base64.decode('utf-8')
-
-                # Agrega los detalles de la imagen y la representación en base64 a la lista de imágenes
-                image_list.append({
-                    'id': image.id,
-                    'name': image.name,
-                    'description': image.description,
-                    'keywords': image.keywords,
-                    'author': image.author,
-                    'creator': image.creator,
-                    'date_capture': image.date_capture,
-                    'date_upload': image.date_upload,
-                    'filename': image.filename,
-                    'base64': imagen_base64_str  
-                })
-                print("image id: ", image.id)
-                print("image name: ", image.name)
         #print(image_list)
         json = jsonify(image_list)
         
@@ -228,24 +207,22 @@ def config_routes(app):
 
         for image in images:
             file_path = IMAGE_DIR +  image.filename
+            fm = FileManager()
+            imagen_base64_str = fm.get_base64(file_path)
 
-            with open(file_path, 'rb') as imagen_file:
-                imagen_datos = imagen_file.read()
-                imagen_base64 = base64.b64encode(imagen_datos)
-                imagen_base64_str = imagen_base64.decode('utf-8')
+            image_list.append({
+                'id': image.id,
+                'title': image.name,
+                'description': image.description,
+                'keywords': image.keywords,
+                'author': image.author,
+                'creator': image.creator,
+                'captureDate': image.date_capture,
+                'storageDate': image.date_upload,
+                'filename': image.filename,
+                'image': imagen_base64_str  
+            })
 
-                image_list.append({
-                    'id': image.id,
-                    'title': image.name,
-                    'description': image.description,
-                    'keywords': image.keywords,
-                    'author': image.author,
-                    'creator': image.creator,
-                    'captureDate': image.date_capture,
-                    'storageDate': image.date_upload,
-                    'filename': image.filename,
-                    'image': imagen_base64_str  
-                })
         json = jsonify(image_list)
         
         if json:

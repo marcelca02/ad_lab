@@ -6,4 +6,11 @@ services:
     environment:
       - DATABASE_URL=sqlite:///pr2.db
     volumes:
-      - ./instance:/data
+      - ./instance:/app/data
+    depends_on:
+      - db
+
+  db:
+    image: jitesoft/sqlite
+    volumes:
+      - ./instance:/app/data
