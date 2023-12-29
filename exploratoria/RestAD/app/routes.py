@@ -95,20 +95,25 @@ def config_routes(app):
     @app.route('/modifyImage', methods=['POST'])
     def modify_image():
         id = request.form['id']
-        name = request.form['name']
+        name = request.form['title']
         description = request.form['description']
         keywords = request.form['keywords']
         author = request.form['author']
-        creator = request.form['creator']
-        date_capture = request.form['date_capture']
+        date_capture = request.form['capture']
         filename = request.form['filename']
+
+        date_capture = datetime.strptime(date_capture, '%Y-%m-%d')
+        
         try:
             db_methods = DBMethods(app)
-            if db_methods.modify_image(id, name, description, keywords, author, creator, date_capture, filename):
-                old_filename = IMAGE_DIR + db_methods.get_image_filename(id)
+            old_filename = IMAGE_DIR + db_methods.get_image_filename(id)
+            print("db")
+            if db_methods.modify_image(id, name, description, keywords, author, date_capture, filename):
+                print("Registro modificado")
                 filename = IMAGE_DIR + filename
                 fm = FileManager()
                 fm.rename_file(old_filename, filename)
+                print("Archivo renombrado")
                 return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
             else:
                 return json.dumps({'success':False}), 403, {'ContentType':'application/json'}

@@ -82,12 +82,6 @@
                     <label>Nombre Imagen:</label>
                     <input name="filename" value="${oldFilename}" required></input>
 
-
-		    <label for="nombre_imagen">Nombre Archivo:</label>
-                    <input type="file" id="imagen" name="file" accept="image/*" onchange="previewImage(event)" required>
-		    
-
-                    
                     
                     <input type="hidden" name="imageId" value="${imageId}">
                     <input type="hidden" name="imageCreator" value="${imageCreator}">

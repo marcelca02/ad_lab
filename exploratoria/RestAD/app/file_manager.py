@@ -5,6 +5,8 @@ import base64
 class FileManager:
     def rename_file(self,old_filename, new_filename):
         try:
+            print("Oldname: ", old_filename)
+            print("Newname: ", new_filename)
             os.rename(old_filename, new_filename)
             return True
         except:

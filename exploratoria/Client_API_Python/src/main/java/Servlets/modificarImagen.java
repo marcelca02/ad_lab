@@ -64,12 +64,19 @@ public class modificarImagen extends HttpServlet {
 			String description = request.getParameter("description");
 			String keywords = request.getParameter("key");
 			String author = request.getParameter("author");
-			String creator = request.getParameter("imageCreator");
 			String capture_date = request.getParameter("date");
 
 			String filename = request.getParameter("filename");
+                        
+                        System.out.println("id: " + id);
+                        System.out.println("Title" + title);
+                        System.out.println("description" + description);
+                        System.out.println("keywords" +keywords );
+                        System.out.println("author" + author);
+                        System.out.println("capture_date" + capture_date);
+                        System.out.println("filename" + filename);
 
-			URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/modify");
+			URL url = new URL("http://127.0.0.1:5000/modifyImage");
                     // Conectar URL
                     try {
                         URLConnection myURLConnection = url.openConnection();
@@ -98,7 +105,6 @@ public class modificarImagen extends HttpServlet {
                                         "&description=" +description +
                                         "&keywords=" +keywords +
                                         "&author=" +author +
-                                        "&creator=" + creator+
                                         "&capture=" + capture_date +
                                         "&filename=" + filename;
 

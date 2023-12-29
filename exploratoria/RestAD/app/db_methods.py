@@ -34,14 +34,13 @@ class DBMethods:
         db.session.commit()
         return True
 
-    def modify_image(self, id, name, description, keywords, author, creator, date_capture, filename):
+    def modify_image(self, id, name, description, keywords, author, date_capture, filename):
         image = Image.query.filter_by(id=id).first()
         if image:
             image.name = name
             image.description = description
             image.keywords = keywords
             image.author = author
-            image.creator = creator
             image.date_capture = date_capture
             image.filename = filename
             db.session.commit()
