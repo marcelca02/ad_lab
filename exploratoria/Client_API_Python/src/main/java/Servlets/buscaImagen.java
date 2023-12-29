@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -51,104 +52,68 @@ public class buscaImagen extends HttpServlet {
         String date_end = request.getParameter("fecha_fin");
         String authorB = request.getParameter("authorB");
         String keywordsB = request.getParameter("keywordsB");
-        
-        
-        System.out.println("CLIENT---DATE START: "+date_start);
-        System.out.println("CLIENT---DATE END: "+date_end);
-        System.out.println("CLIENT---Autor: "+authorB);
-        System.out.println("CLIENT---Keywords: "+keywordsB);
-        
-        
-        
-        URL url = new URL("http://127.0.0.1:5000/searchImages");
-        // Conectar URL
-        try {
-            URLConnection myURLConnection = url.openConnection();
-            myURLConnection.connect();
-        }
-        catch (MalformedURLException e) {
-            // Fallo de URL
-            Logger.getAnonymousLogger().log(Level.SEVERE,"URL error", e);
-        } 
-        catch (IOException e){
-            // fallo de la conexion
-            Logger.getAnonymousLogger( ).log(Level.SEVERE, "I0 error",e);
-        }
-        
-        //Abrir una conexión HTTP
-        HttpURLConnection connection =(HttpURLConnection)url.openConnection();
-        // Configurar el método de la petición 
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Accept", "application/json");
-        // Escribir los parámetros
-        try (OutputStream output = connection.getOutputStream()){
-            // Construye la cadena de datos 
-            String data = "date_ini=" + date_start +
-                            "&date_fin=" +date_end +
-                            "&keywords=" +keywordsB +
-                            "&author=" +authorB;
-            
-            output.write(data.getBytes("UTF-8"));
-            output.close();
-            
-            System.out.println("ENVIADO BUSQUEDA");
-            // Recibe la respuesta del servidor
-            int responsecode = connection.getResponseCode();
-            if (responsecode == HttpURLConnection.HTTP_OK){
-                // Leer la respuesta JSON
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                JsonReader jsonReader = Json.createReader(reader);
-                JsonArray jsonArray = jsonReader.readArray();
 
-                // Convertir el JSON a una lista de objetos Image
+        URL url = new URL("http://127.0.0.1:5000/searchImages");
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Accept", "application/json");
+
+            try (OutputStream output = connection.getOutputStream()) {
+                String data = "date_ini=" + URLEncoder.encode(date_start, "UTF-8") +
+                              "&date_fin=" + URLEncoder.encode(date_end, "UTF-8") +
+                              "&keywords=" + URLEncoder.encode(keywordsB, "UTF-8") +
+                              "&author=" + URLEncoder.encode(authorB, "UTF-8");
+
+                output.write(data.getBytes("UTF-8"));
+            }
+
+            int responsecode = connection.getResponseCode();
+            if (responsecode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                JsonArray jsonArray = Json.createReader(reader).readArray();
+
                 List<Image> imagesList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JsonObject jsonImage = jsonArray.getJsonObject(i);
-
-                    // Crear un objeto Image y agregarlo a la lista
                     Image image = new Image();
                     image.setId(jsonImage.getInt("id"));
-                    image.setTitle(jsonImage.getString("title"));
+                    image.setId(jsonImage.getInt("id"));
+                    System.out.println("Image: " + jsonImage.getInt("id"));
+                    image.setTitle(jsonImage.getString("name"));
+                    System.out.println("Image: " + jsonImage.getString("name"));
                     image.setDescription(jsonImage.getString("description"));
-                    image.setKeywords(getKeywordsArray(jsonImage.getJsonArray("keywords")));
+                    System.out.println("Image: " + jsonImage.getString("name"));
+                    image.setKeywords(jsonImage.getString("keywords").split("[,\\s]+"));
+                    System.out.println("Image: " + jsonImage.getString("keywords").split("[,\\s]+"));
                     image.setAuthor(jsonImage.getString("author"));
                     image.setCreator(jsonImage.getString("creator"));
-                    image.setCaptureDate(jsonImage.getString("captureDate"));
-                    image.setStorageDate(jsonImage.getString("storageDate"));
+                    image.setCaptureDate(jsonImage.getString("date_capture"));
+                    image.setStorageDate(jsonImage.getString("date_upload"));
                     image.setFilename(jsonImage.getString("filename"));
-                    image.setImage(jsonImage.getString("image"));
+                    image.setImage(jsonImage.getString("base64"));
 
-                    // Añadir el objeto Image a la lista
                     imagesList.add(image);
                 }
                 
-                System.out.println("Envia a Servlet");
+                // Cerrar la conexión
+                connection.disconnect();
 
                 RequestDispatcher rd;
-                request.setAttribute("images",imagesList); 
-
-                rd=request.getRequestDispatcher("buscaImagen.jsp");
+                request.setAttribute("images", imagesList);
+                rd = request.getRequestDispatcher("buscaImagen.jsp");
                 rd.forward(request, response);
-                
             } else {
-                //response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
-                response.sendRedirect("/Client/error.jsp");
+                response.sendRedirect("/Client_API_Python/error.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            //response.getWriter().write("Error:"+ e.getMessage());
-            response.sendRedirect("/Client/error.jsp");
+            response.sendRedirect("/Client_API_Python/error.jsp");
         }
+    
         
     }
-    
-    // Método auxiliar para convertir el JsonArray de keywords a un array de strings
-    private static String[] getKeywordsArray(JsonArray keywordsArray) {
-        String[] keywords = new String[keywordsArray.size()];
-        for (int i = 0; i < keywordsArray.size(); i++) {
-            keywords[i] = keywordsArray.getString(i);
-        }
-        return keywords;
-    }
+
 }

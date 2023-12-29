@@ -164,9 +164,6 @@ def config_routes(app):
         keywords = request.form['keywords']
         author = request.form['author']
 
-        #date_ini = datetime.strptime(date_ini, '%Y-%m-%d')
-        #date_fin = datetime.strptime(date_fin, '%Y-%m-%d')
-
         db_methods = DBMethods(app)
         
         image_list = []
