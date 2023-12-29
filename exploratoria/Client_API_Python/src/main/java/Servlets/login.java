@@ -95,14 +95,14 @@ public class login extends HttpServlet {
                 System.out.println("Servlet envia a menu "+ responseContent.toString());
                 System.out.println("CODE: " + responsecode);
                 // Redirect
-                response.sendRedirect("/Client_API_Python/menu.jsp");
+                response.sendRedirect("./menu.jsp");
 
 
         
                 
             } else {
                 
-                response.sendRedirect("/Client_API_Python/error.jsp");
+                response.sendRedirect("./error.jsp");
                 
             }
             

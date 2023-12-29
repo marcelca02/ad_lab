@@ -54,7 +54,6 @@ public class imagenesRecientes extends HttpServlet {
             // Verificar el código de estado de la respuesta
             if (connection.getResponseCode() != 200) {
                 // Redirect
-                response.sendRedirect("/Client_API_Python/menu.jsp");
                 throw new RuntimeException("Error: Código de estado " + connection.getResponseCode());
             }
 
@@ -95,7 +94,7 @@ public class imagenesRecientes extends HttpServlet {
 
         } catch (Exception e) {
             // Redirect
-            response.sendRedirect("/Client_API_Python/menu.jsp");
+            response.sendRedirect("./menu.jsp");
             e.printStackTrace();
         }
     }

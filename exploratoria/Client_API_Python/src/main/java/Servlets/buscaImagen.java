@@ -133,12 +133,12 @@ public class buscaImagen extends HttpServlet {
                 
             } else {
                 //response.getWriter().write("Error al enviar datos al servidor. Código de respuesta: " + responsecode);
-                response.sendRedirect("/Client/error.jsp");
+                response.sendRedirect("./error.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
             //response.getWriter().write("Error:"+ e.getMessage());
-            response.sendRedirect("/Client/error.jsp");
+            response.sendRedirect("./error.jsp");
         }
         
     }

@@ -60,7 +60,7 @@ public class listaImagen extends HttpServlet {
             if (connection.getResponseCode() != 200) {
                 // Redirect
                 System.out.println("Error: Código de estado " + connection.getResponseCode());
-                response.sendRedirect("/Client_API_Python/menu.jsp");
+                response.sendRedirect("./menu.jsp");
                 throw new RuntimeException("Error: Código de estado " + connection.getResponseCode());
             }
 
@@ -119,7 +119,7 @@ public class listaImagen extends HttpServlet {
             }
         } catch (Exception e) {
             // Manejo de errores: Redirigir a menu.jsp en caso de excepción
-            response.sendRedirect("/Client_API_Python/menu.jsp");
+            response.sendRedirect("./menu.jsp");
             e.printStackTrace();
         }
     }

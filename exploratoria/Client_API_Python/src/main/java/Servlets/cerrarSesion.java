@@ -35,7 +35,7 @@ public class cerrarSesion extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         session.setAttribute("username", null);
-        response.sendRedirect("/Client/login.jsp");
+        response.sendRedirect("./login.jsp");
     }
 
 }
