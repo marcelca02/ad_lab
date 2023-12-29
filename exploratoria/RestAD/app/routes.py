@@ -219,3 +219,37 @@ def config_routes(app):
             return json, 200, {'ContentType':'application/json'}
         else:
             return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+     
+    @app.route('/recentImages', methods=['GET'])
+    def recentImages():
+        db_methods = DBMethods(app)
+        images = db_methods.recent_images()
+        image_list = []
+
+        for image in images:
+            file_path = IMAGE_DIR +  image.filename
+
+            with open(file_path, 'rb') as imagen_file:
+                imagen_datos = imagen_file.read()
+                imagen_base64 = base64.b64encode(imagen_datos)
+                imagen_base64_str = imagen_base64.decode('utf-8')
+
+                image_list.append({
+                    'id': image.id,
+                    'title': image.name,
+                    'description': image.description,
+                    'keywords': image.keywords,
+                    'author': image.author,
+                    'creator': image.creator,
+                    'captureDate': image.date_capture,
+                    'storageDate': image.date_upload,
+                    'filename': image.filename,
+                    'image': imagen_base64_str  
+                })
+        json = jsonify(image_list)
+        
+        if json:
+            return json, 200, {'ContentType':'application/json'}
+        else:
+            return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+
