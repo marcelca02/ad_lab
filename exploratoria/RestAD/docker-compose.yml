@@ -1,16 +1,10 @@
+version: '3'
 services:
   flask:
     build: .
     ports:
       - "5000:5000"
-    environment:
-      - DATABASE_URL=sqlite:///pr2.db
     volumes:
-      - ./instance:/app/data
-    depends_on:
-      - db
-
-  db:
-    image: jitesoft/sqlite
-    volumes:
-      - ./instance:/app/data
+      - "./instance:/app/instance"
+      - "/var/webapp/lab1/images:/app/images"
+      - "/var/webapp/lab1/images/download:/app/download"

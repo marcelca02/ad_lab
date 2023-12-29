@@ -52,7 +52,7 @@ public class eliminarImagen extends HttpServlet {
                 int id = Integer.parseInt(imageId);
 		
 		
-		URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/delete");
+		URL url = new URL("http://localhost:5000/deleteImage");
 		// Conectar URL
 		try {
 		    URLConnection myURLConnection = url.openConnection();
@@ -84,10 +84,6 @@ public class eliminarImagen extends HttpServlet {
 		    // Recibe la respuesta del servidor
 		    int responsecode = connection.getResponseCode();
 		    if (responsecode == HttpURLConnection.HTTP_OK){
-			File imagen = new File(constants.IMAGESDIR+filename);
-			FileInputStream readImage = new FileInputStream(imagen);
-			readImage.close();
-			imagen.delete();
 			response.sendRedirect("./eliminarImagen.jsp");
 		    } else {
 			response.sendRedirect("./error.jsp");
