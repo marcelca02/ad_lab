@@ -38,7 +38,7 @@
 		    request.setAttribute("filename", filename);
 
 		    if (session.getAttribute("username") == null) {
-			response.sendRedirect("/Client/listaImagenes.jsp");
+			response.sendRedirect("./listaImagenes.jsp");
 		    }
 		    %>
 
