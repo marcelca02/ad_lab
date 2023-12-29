@@ -126,10 +126,10 @@ def config_routes(app):
         id = request.form['id']
         try:
             db_methods = DBMethods(app)
+            filename = IMAGE_DIR + db_methods.get_image_filename(id)
             if db_methods.delete_image(id):
                 fm = FileManager()
-                old_filename = IMAGE_DIR + db_methods.get_image_filename(id)
-                fm.delete_file(old_filename)
+                fm.delete_file(filename)
                 return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
             else:
                 return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
