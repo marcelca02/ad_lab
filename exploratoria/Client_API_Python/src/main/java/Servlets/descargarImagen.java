@@ -42,30 +42,8 @@ public class descargarImagen extends HttpServlet {
 		String id = request.getParameter("imageId");
 		String filename = request.getParameter("filename");
                 
-		
-		/*
-		// URL del servicio
-		URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/getImage"+"/"+filename);
-		// Abrir la conexión HTTP
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-		// Configurar la solicitud
-		connection.setRequestMethod("GET");
-		connection.setRequestProperty("Accept", "application/json");
-
-		// Verificar el código de estado de la respuesta
-		if (connection.getResponseCode() != 200) {
-		    // Redirect
-		    response.sendRedirect("/Client/listarImagenes.jsp");
-		    throw new RuntimeException("Error: Código de estado " + connection.getResponseCode());
-		}
-		
-		// OBTENER EL ARCHIVO QUE LLEGA DE LA LLAMADA
-		*/
-                
-                
                 try {
-                    String serverURL = "http://localhost:8080/RestAD/resources/jakartaee9/getImage"+"/"+filename;
+                    String serverURL = "http://localhost:5000/downloadImage/"+filename;
                     URL url = new URL(serverURL);
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -74,8 +52,8 @@ public class descargarImagen extends HttpServlet {
                     int responseCode = connection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_OK) {
                         InputStream inputStream = connection.getInputStream();
-                        FileOutputStream outputStream = new FileOutputStream(constants.IMAGESDIR + "/" + filename);
-
+                        FileOutputStream outputStream = new FileOutputStream(constants.DOWNLOADDIR + "/" + filename);
+			System.out.print(constants.DOWNLOADDIR  + filename);
                         byte[] buffer = new byte[4096];
                         int bytesRead;
                         while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -84,9 +62,8 @@ public class descargarImagen extends HttpServlet {
 
                         outputStream.close();
                         inputStream.close();
-                        System.out.println("Imagen descargada exitosamente.");
                         // Redirect
-                        response.sendRedirect("/Client/listaImagenes.jsp");
+                        response.sendRedirect("./listaImagenes.jsp");
                     } else {
                         System.out.println("Error al descargar la imagen. Código de respuesta: " + responseCode);
                     }

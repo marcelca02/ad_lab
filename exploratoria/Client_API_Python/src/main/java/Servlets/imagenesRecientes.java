@@ -43,7 +43,7 @@ public class imagenesRecientes extends HttpServlet {
             throws ServletException, IOException {
         try {
             // URL del servicio
-            URL url = new URL("http://localhost:8080/RestAD/resources/jakartaee9/imageRecent");
+            URL url = new URL("http://localhost:5000/recentImages");
             // Abrir la conexión HTTP
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -54,7 +54,6 @@ public class imagenesRecientes extends HttpServlet {
             // Verificar el código de estado de la respuesta
             if (connection.getResponseCode() != 200) {
                 // Redirect
-                response.sendRedirect("/Client/menu.jsp");
                 throw new RuntimeException("Error: Código de estado " + connection.getResponseCode());
             }
 
@@ -73,7 +72,7 @@ public class imagenesRecientes extends HttpServlet {
                 image.setId(jsonImage.getInt("id"));
                 image.setTitle(jsonImage.getString("title"));
                 image.setDescription(jsonImage.getString("description"));
-                image.setKeywords(getKeywordsArray(jsonImage.getJsonArray("keywords")));
+                image.setKeywords(jsonImage.getString("keywords").split("[,\\s]+"));
                 image.setAuthor(jsonImage.getString("author"));
                 image.setCreator(jsonImage.getString("creator"));
                 image.setCaptureDate(jsonImage.getString("captureDate"));
@@ -95,7 +94,7 @@ public class imagenesRecientes extends HttpServlet {
 
         } catch (Exception e) {
             // Redirect
-            response.sendRedirect("/Client/menu.jsp");
+            response.sendRedirect("./menu.jsp");
             e.printStackTrace();
         }
     }

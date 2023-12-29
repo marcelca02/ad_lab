@@ -1,7 +1,6 @@
 from . import db
 from .models import User, Image
 from datetime import datetime
-from sqlalchemy import and_
 
 class DBMethods:
     def __init__(self, app):
@@ -77,4 +76,8 @@ class DBMethods:
     
     def search_images_by_date_keywords(self, date_start, date_end, keywords):
         images = Image.query.filter(Image.date_capture.between(datetime.fromisoformat(date_start), datetime.fromisoformat(date_end)), Image.keywords.ilike(f"%{keywords}%")).all()
+        return images
+
+    def recent_images(self):
+        images = Image.query.order_by(Image.date_upload.desc()).limit(5).all()
         return images

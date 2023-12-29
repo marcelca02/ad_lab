@@ -103,10 +103,10 @@ public class registroImagen extends HttpServlet {
         if (responseCode == HttpURLConnection.HTTP_OK) {
             System.out.println("Subido con exito");
             // Redirect
-            response.sendRedirect("/Client_API_Python/menu.jsp");
+            response.sendRedirect("./menu.jsp");
         } else {
             // Redirect
-            response.sendRedirect("/Client_API_Python/error.jsp");
+            response.sendRedirect("./error.jsp");
         }
 
         connection.disconnect();

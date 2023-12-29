@@ -106,11 +106,13 @@ public class buscaImagen extends HttpServlet {
                 rd = request.getRequestDispatcher("buscaImagen.jsp");
                 rd.forward(request, response);
             } else {
+
                 response.sendRedirect("/Client_API_Python/error.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("/Client_API_Python/error.jsp");
+
         }
     
         
